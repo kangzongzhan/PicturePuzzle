@@ -11,7 +11,7 @@ import android.widget.TextView;
  * Created by zkang on 2017/1/7.
  */
 
-public class ClassicListFragment extends AbstractListFragment{
+public class ClassicListFragment extends AbstractListFragment {
 
     @Nullable
     @Override
