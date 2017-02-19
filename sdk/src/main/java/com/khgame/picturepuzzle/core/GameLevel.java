@@ -33,6 +33,14 @@ public class GameLevel {
         }
     }
 
+    public static int xNums(List<Point> list) {
+        return xNums(getLevel(list));
+    }
+
+    public static int yNums(List<Point> list) {
+        return yNums(getLevel(list));
+    }
+
     public static int xNums(int gameLevel) {
         switch (gameLevel){
             case EASY:

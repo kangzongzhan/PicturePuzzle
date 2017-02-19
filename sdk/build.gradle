@@ -29,3 +29,14 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.1'
     testCompile 'junit:junit:4.12'
 }
+
+task styleCheck(type: Checkstyle) {
+    configFile new File(rootDir, "checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/multiwaveview/**/*'
+    exclude '**/ex/chips/**/*'
+
+    classpath = files()
+}

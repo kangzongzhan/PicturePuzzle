@@ -2,15 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_main"
+    android:id="@+id/content_classic_game"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.khgame.picturepuzzle2.MainActivity"
-    tools:showIn="@layout/activity_main">
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/main_viewpager"
+    tools:context="com.khgame.picturepuzzle2.ClassicGameActivity"
+    tools:showIn="@layout/activity_classic_game">
+    <com.khgame.picturepuzzle2.ui.view.GameView
+        android:id="@+id/gameview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </com.khgame.picturepuzzle2.ui.view.GameView>
 </RelativeLayout>

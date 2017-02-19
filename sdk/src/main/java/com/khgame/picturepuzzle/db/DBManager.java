@@ -1,8 +1,12 @@
-package com.khgame.picturepuzzle2.sdk.db;
+package com.khgame.picturepuzzle.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.khgame.picturepuzzle.db.table.ClassicPictureTable;
+import com.khgame.picturepuzzle.db.table.SerialPictureTable;
+import com.khgame.picturepuzzle.db.table.SerialTable;
 
 /**
  * Created by Kisha Deng on 2/12/2017.
@@ -23,32 +27,21 @@ public class DBManager {
         }
         return instance;
     }
+
+    public static SQLiteDatabase getBD() {
+        return getInstance().sqLiteOpenHelper.getWritableDatabase();
+    }
+
     public static void initialize(Context context) {
-        getInstance();
         mContext = context;
     }
 
-    class MySQLiteOpenHelper extends SQLiteOpenHelper{
-
-        public MySQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-            super(context, name, factory, version);
-        }
-
+    private SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(mContext, DB_NAME, null, DB_VERSION) {
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-        }
-    }
-
-    private SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper() {
-        @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+            sqLiteDatabase.execSQL(ClassicPictureTable.CREATESQL);
+            sqLiteDatabase.execSQL(SerialTable.CREATESQL);
+            sqLiteDatabase.execSQL(SerialPictureTable.CREATESQL);
         }
 
         @Override

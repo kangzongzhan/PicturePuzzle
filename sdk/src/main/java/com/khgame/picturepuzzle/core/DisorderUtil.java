@@ -85,7 +85,7 @@ public class DisorderUtil {
                     ? bestDisorderList : listAfterLeft;
 
             list = bestDisorderList;
-            if(innerDisorder(list) + outterDisorder(list) > 50){
+            if(innerDisorder(list) + outterDisorder(list) > 20 * gameLevel) {
                 break;
             }
         }

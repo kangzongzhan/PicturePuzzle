@@ -6,8 +6,15 @@ package com.khgame.picturepuzzle.core;
  */
 
 public class Point {
-    int x;
-    int y;
+    public int x;
+    public int y;
+
+    public Point() {}
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -20,10 +27,13 @@ public class Point {
 
     @Override
     protected Point clone() {
-        Point p = new Point();
-        p.x = x;
-        p.y = y;
+        Point p = new Point(x, y);
         return p;
+    }
+
+    @Override
+    public int hashCode() {
+        return x * 10 + y;
     }
 
     @Override
