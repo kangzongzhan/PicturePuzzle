@@ -1,6 +1,7 @@
 package com.khgame.picturepuzzle.service;
 
 import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.service.model.Serial;
 
 import java.io.IOException;
 import java.util.List;

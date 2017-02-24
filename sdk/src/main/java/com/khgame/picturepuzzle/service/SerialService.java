@@ -1,5 +1,7 @@
 package com.khgame.picturepuzzle.service;
 
+import com.khgame.picturepuzzle.service.model.Serial;
+
 import java.util.List;
 
 import retrofit2.Call;
