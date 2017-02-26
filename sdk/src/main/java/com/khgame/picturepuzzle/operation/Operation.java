@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle.common;
+package com.khgame.picturepuzzle.operation;
 
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -64,12 +64,24 @@ public abstract class Operation<S, F> implements Runnable {
         });
     }
 
+    protected void postProgress(final int progress) {
+        callback.onProgress(progress);
+        H.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onProgress(progress);
+            }
+        });
+    }
+
 
     public static class Callback<S, F> {
         public void onSuccess(S s){};
         public void onFailure(F f){};
+        public void onProgress(int progress){};
         public void onSuccessMainThread(S s){};
         public void onFailureMainThread(F f){};
+        public void onProgressMainThread(int progress){};
     }
 
     private static Callback NullCallback = new Callback<>();

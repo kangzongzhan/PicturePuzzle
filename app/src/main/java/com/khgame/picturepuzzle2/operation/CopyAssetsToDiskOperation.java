@@ -2,8 +2,10 @@ package com.khgame.picturepuzzle2.operation;
 
 import android.util.Log;
 
-import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.model.ClassicPicture;
+import com.khgame.picturepuzzle.operation.Operation;
 import com.khgame.picturepuzzle2.App;
+import com.nostra13.universalimageloader.utils.IoUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -16,14 +18,14 @@ import java.io.OutputStream;
  * Created by zkang on 2017/2/18.
  */
 
-public class CopyAssetsToDiskOperation extends Operation<File, Void> {
+public class CopyAssetsToDiskOperation extends Operation<ClassicPicture, Void> {
     private static final String TAG = "CopyAssetsOperation";
     private String assets;
-    private File destination;
+    private String uuid;
 
-    public CopyAssetsToDiskOperation(String assets, File destination) {
+    public CopyAssetsToDiskOperation(String assets, String uuid) {
         this.assets = assets;
-        this.destination = destination;
+        this.uuid = uuid;
     }
 
     @Override
@@ -32,30 +34,24 @@ public class CopyAssetsToDiskOperation extends Operation<File, Void> {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            inputStream = App.application.getAssets().open(assets);
-            outputStream = new FileOutputStream(destination);
+            inputStream = App.getInstance().getAssets().open(assets);
+            outputStream = new FileOutputStream(App.PictureFile(uuid));
             byte[] bytes = new byte[1024];
             while (inputStream.read(bytes) != -1) {
                 outputStream.write(bytes);
             }
-            postSuccess(destination);
+
+            ClassicPicture classicPicture = new ClassicPicture();
+            classicPicture.uuid = uuid;
+            postSuccess(classicPicture);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             postFailure(null);
         } finally {
-            closeQuietly(inputStream);
-            closeQuietly(outputStream);
+            IoUtils.closeSilently(inputStream);
+            IoUtils.closeSilently(outputStream);
         }
     }
 
-    private void closeQuietly(Closeable closeable) {
-        if(closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

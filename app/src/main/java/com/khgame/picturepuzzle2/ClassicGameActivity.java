@@ -2,22 +2,20 @@ package com.khgame.picturepuzzle2;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
-import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.model.BitmapEntry;
+import com.khgame.picturepuzzle.model.ClassicPicture;
+import com.khgame.picturepuzzle.operation.LoadPictureOperation;
+import com.khgame.picturepuzzle.operation.Operation;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.core.Point;
-import com.khgame.picturepuzzle.db.model.ClassicPicture;
 import com.khgame.picturepuzzle.db.operation.GetClassicPictureByIdOperation;
 import com.khgame.picturepuzzle.db.operation.UpdateClassicPictureOperation;
-import com.khgame.picturepuzzle2.operation.LoadLocalPicture;
 import com.khgame.picturepuzzle2.ui.view.GameView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -62,10 +60,11 @@ public class ClassicGameActivity extends AppCompatActivity {
             @Override
             public void onSuccess(ClassicPicture picture) {
                 ClassicGameActivity.this.picture = picture;
-                new LoadLocalPicture(picture.localPath).callback(new Operation.Callback<Bitmap, String>() {
+
+                new LoadPictureOperation(picture.uuid, null).callback(new Operation.Callback<BitmapEntry, Void>() {
                     @Override
-                    public void onSuccessMainThread(Bitmap bitmap) {
-                        ClassicGameActivity.this.bitmap = bitmap;
+                    public void onSuccessMainThread(BitmapEntry bitmapEntry) {
+                        ClassicGameActivity.this.bitmap = bitmapEntry.bitmap;
                         startGame();
                     }
                 }).execute();

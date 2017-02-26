@@ -23,7 +23,8 @@
 
         <activity android:name="com.khgame.picturepuzzle2.ClassicGameActivity"
             android:label="@string/title_activity_classic_game"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SerialListActivity" />
     </application>
 
 </manifest>

@@ -12,8 +12,8 @@ public class SerialTable {
         public static final String ID = "_id"; // Integer, Primary key, Autoincrement
         public static final String UUID = "uuid"; // Text
         public static final String NAME = "name"; // Text
+        public static final String VERSION = "version"; // Integer
         public static final String GAMELEVEL = "game_level"; // Integer
-        public static final String LOCALCOVERPATH = "local_cover_path"; // Integer
         public static final String NETWORKCOVERPATH = "network_cover_path"; // Integer
         public static final String THEMECOLOR = "theme_color"; // Text
     }
@@ -22,8 +22,8 @@ public class SerialTable {
             Cols.ID + " integer primary key autoincrement, " +
             Cols.UUID + " text, " +
             Cols.NAME + " text, " +
+            Cols.VERSION + " integer. " +
             Cols.GAMELEVEL + " text, " +
-            Cols.LOCALCOVERPATH + " text, " +
             Cols.NETWORKCOVERPATH + " text, " +
             Cols.THEMECOLOR + " text" +
             ")";

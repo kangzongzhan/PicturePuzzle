@@ -334,7 +334,7 @@ public class GameView extends FrameLayout {
         boolean gameOver = true;
         for(Point point: gameData) {
             int index = gameData.indexOf(point);
-            gameOver = index == (xNums(gameData) * point.y + point.x);
+            gameOver = gameOver && (index == (xNums(gameData) * point.y + point.x));
         }
         return gameOver;
     }

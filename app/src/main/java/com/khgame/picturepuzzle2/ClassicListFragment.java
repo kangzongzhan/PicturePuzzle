@@ -15,11 +15,11 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.model.ClassicPicture;
+import com.khgame.picturepuzzle.operation.Operation;
 import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
-import com.khgame.picturepuzzle.db.model.ClassicPicture;
 import com.khgame.picturepuzzle.db.operation.QueryAllClassicPicturesOperation;
 import com.khgame.picturepuzzle2.ui.view.DisorderImageView;
 
@@ -110,7 +110,7 @@ public class ClassicListFragment extends AbstractListFragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            Bitmap bitmap = BitmapFactory.decodeFile(pictures.get(i).localPath);
+            Bitmap bitmap = BitmapFactory.decodeFile(App.PictureFile(pictures.get(i).uuid).getAbsolutePath());
             DisorderImageView imageView = new DisorderImageView(ClassicListFragment.this.getContext());
 
             String gameData = null;

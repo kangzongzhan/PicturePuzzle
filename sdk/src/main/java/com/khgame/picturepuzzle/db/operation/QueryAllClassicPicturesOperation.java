@@ -2,10 +2,10 @@ package com.khgame.picturepuzzle.db.operation;
 
 import android.database.Cursor;
 
-import com.khgame.picturepuzzle.db.model.ClassicPicture;
 import com.khgame.picturepuzzle.db.table.ClassicPictureTable;
 
 import com.khgame.picturepuzzle.db.table.ClassicPictureTable.Cols;
+import com.khgame.picturepuzzle.model.ClassicPicture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,7 @@ public class QueryAllClassicPicturesOperation extends DBOperation<List, Void> {
     @Override
     protected void doWork() {
 
-        String[] projection = {Cols.ID, Cols.ASSETSPATH, Cols.LOCALPATH, Cols.NETWORKPATH,
-        Cols.EASYDATA, Cols.MEDIUMDATA, Cols.HARDDATA};
+        String[] projection = {Cols.ID, Cols.UUID, Cols.NETWORKPATH, Cols.EASYDATA, Cols.MEDIUMDATA, Cols.HARDDATA};
         String orderBy = Cols.ID + " DESC";
 
         Cursor cursor = db.query(ClassicPictureTable.NAME, projection, null, null, null, null, orderBy);
@@ -30,8 +29,7 @@ public class QueryAllClassicPicturesOperation extends DBOperation<List, Void> {
             for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 ClassicPicture picture = new ClassicPicture();
                 picture._id = cursor.getLong(cursor.getColumnIndex(Cols.ID));
-                picture.assetsPath = cursor.getString(cursor.getColumnIndex(Cols.ASSETSPATH));
-                picture.localPath = cursor.getString(cursor.getColumnIndex(Cols.LOCALPATH));
+                picture.uuid = cursor.getString(cursor.getColumnIndex(Cols.UUID));
                 picture.networkPath = cursor.getString(cursor.getColumnIndex(Cols.NETWORKPATH));
                 picture.easyData = cursor.getString(cursor.getColumnIndex(Cols.EASYDATA));
                 picture.mediumData = cursor.getString(cursor.getColumnIndex(Cols.MEDIUMDATA));

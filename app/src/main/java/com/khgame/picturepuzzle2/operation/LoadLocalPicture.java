@@ -3,7 +3,7 @@ package com.khgame.picturepuzzle2.operation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.operation.Operation;
 
 /**
  * Created by zkang on 2017/2/19.

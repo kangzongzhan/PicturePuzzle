@@ -8,5 +8,5 @@ public class SerialDto {
     public String uuid;
     public String name;
     public String coverUrl;
-    public String url;
+    public String themeColor;
 }

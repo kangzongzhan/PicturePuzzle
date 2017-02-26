@@ -2,6 +2,8 @@ package com.khgame.picturepuzzle2;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.*;
 
 /**
@@ -12,6 +14,13 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
+        assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void testUuid() throws Exception {
+        String uuid = UUID.randomUUID().toString();
+        System.out.println(uuid);
         assertEquals(4, 2 + 2);
     }
 }

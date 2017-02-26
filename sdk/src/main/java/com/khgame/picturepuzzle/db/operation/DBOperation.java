@@ -2,7 +2,7 @@ package com.khgame.picturepuzzle.db.operation;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.khgame.picturepuzzle.common.Operation;
+import com.khgame.picturepuzzle.operation.Operation;
 import com.khgame.picturepuzzle.db.DBManager;
 
 /**

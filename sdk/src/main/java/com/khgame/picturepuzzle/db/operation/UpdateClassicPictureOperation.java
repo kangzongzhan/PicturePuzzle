@@ -5,8 +5,8 @@ import android.content.ContentValues;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.core.Point;
-import com.khgame.picturepuzzle.db.model.ClassicPicture;
 import com.khgame.picturepuzzle.db.table.ClassicPictureTable;
+import com.khgame.picturepuzzle.model.ClassicPicture;
 
 import java.util.List;
 
