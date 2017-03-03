@@ -20,9 +20,9 @@ public class Serial implements Comparable<Serial>{
             return name.compareTo(o.name);
         }
         if(this.installed.equals(SerialState.INSTALLED) || o.installed.equals(SerialState.UNINSTALL)) {
-            return 1;
+            return -1;
         }
-        return -1;
+        return 1;
     }
 
     public static class SerialState {

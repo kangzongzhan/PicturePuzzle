@@ -2,10 +2,12 @@ package com.khgame.picturepuzzle.serial;
 
 import com.khgame.picturepuzzle.db.model.SerialPicturePo;
 import com.khgame.picturepuzzle.db.model.SerialPo;
+import com.khgame.picturepuzzle.db.operation.DeleteSerialPicturesByUuid;
 import com.khgame.picturepuzzle.db.operation.GetAllSerialPictureByUuidOperation;
 import com.khgame.picturepuzzle.db.operation.InsertSerialOperation;
 import com.khgame.picturepuzzle.db.operation.InsertSerialPictureOperation;
 import com.khgame.picturepuzzle.db.operation.QueryAllSerialOperation;
+import com.khgame.picturepuzzle.db.operation.UpdateSerialOperation;
 import com.khgame.picturepuzzle.model.Serial;
 import com.khgame.picturepuzzle.model.SerialPicture;
 import com.khgame.picturepuzzle.operation.DownloadPictureOperation;
@@ -83,21 +85,23 @@ public class SerialManagerImpl implements SerialManager {
         new GetSerialPictureByUuid(serial.uuid).callback(new Operation.Callback<List<SerialPictureDto>, Void>() {
             @Override
             public void onSuccess(List<SerialPictureDto> serialPictureDtos) {
-
+                new DeleteSerialPicturesByUuid(serial.uuid).execute();
                 for (SerialPictureDto serialPictureDto: serialPictureDtos) {
                     new DownloadPictureOperation(serialPictureDto.uuid, serialPictureDto.url).execute();
-                    new InsertSerialPictureOperation(serialPictureDto).execute();
-
+                    new InsertSerialPictureOperation(serialPictureDto, serial.uuid).execute();
                     int progress = serialPictureDtos.indexOf(serialPictureDto) / serialPictureDtos.size();
                     bus.post(new SerialInstallEvent(SerialInstallEvent.EventType.INSTALLING, progress));
                 }
-                new InsertSerialOperation(serial).execute();
+                new InsertSerialOperation(serial).callback(new Operation.Callback<Serial, Void>() {
+                    @Override
+                    public void onSuccess(Serial serial) {
+                        serial.installed = Serial.SerialState.INSTALLED;
+                    }
+                }).execute();
                 Collections.sort(serialList);
                 bus.post(new SerialInstallEvent(SerialInstallEvent.EventType.END));
             }
         }).enqueue();
-
-
     }
 
     @Override
@@ -126,6 +130,19 @@ public class SerialManagerImpl implements SerialManager {
     @Override
     public Serial getCurrentSerial() {
         return currentSerial;
+    }
+
+    @Override
+    public void updateCurrentSerial() {
+        if(currentSerial == null) {
+            return;
+        }
+        new UpdateSerialOperation(currentSerial).enqueue();
+    }
+
+    @Override
+    public List<SerialPicture> getCurrentSerialPictureList() {
+        return currentSerialPictureList;
     }
 
     @Override
@@ -158,7 +175,7 @@ public class SerialManagerImpl implements SerialManager {
                     serialPicture.serialUuid = serialPicturePo.serialUuid;
                     serialPicture.networkPath = serialPicturePo.networkPath;
                     serialPicture.easyData = serialPicturePo.easyData;
-                    serialPicture.mediaData = serialPicturePo.mediumData;
+                    serialPicture.mediumData = serialPicturePo.mediumData;
                     serialPicture.hardData = serialPicturePo.hardData;
                     currentSerialPictureList.add(serialPicture);
                 }

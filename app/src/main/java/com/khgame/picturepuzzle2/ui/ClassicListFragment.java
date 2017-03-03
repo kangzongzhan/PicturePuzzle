@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle2.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +21,8 @@ import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.db.operation.QueryAllClassicPicturesOperation;
+import com.khgame.picturepuzzle2.App;
+import com.khgame.picturepuzzle2.R;
 import com.khgame.picturepuzzle2.ui.view.DisorderImageView;
 
 import java.util.ArrayList;
@@ -160,7 +162,7 @@ public class ClassicListFragment extends AbstractListFragment {
             Intent intent = new Intent();
             intent.setClass(getActivity(), ClassicGameActivity.class);
             intent.putExtra("GameLevel", gameLevel);
-            intent.putExtra("ID", picture._id);
+            intent.putExtra("uuid", picture.uuid);
             startActivity(intent);
         }
     };

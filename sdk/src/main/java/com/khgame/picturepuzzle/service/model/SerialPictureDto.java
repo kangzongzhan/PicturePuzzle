@@ -8,7 +8,6 @@ public class SerialPictureDto {
 
     public String uuid;
     public String name;
-    public String serialUuid;
     public String url;
     public String easyData;
     public String mediumData;

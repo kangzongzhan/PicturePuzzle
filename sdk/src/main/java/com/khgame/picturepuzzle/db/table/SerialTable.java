@@ -22,7 +22,7 @@ public class SerialTable {
             Cols.ID + " integer primary key autoincrement, " +
             Cols.UUID + " text, " +
             Cols.NAME + " text, " +
-            Cols.VERSION + " integer. " +
+            Cols.VERSION + " integer, " +
             Cols.GAMELEVEL + " text, " +
             Cols.NETWORKCOVERPATH + " text, " +
             Cols.THEMECOLOR + " text" +

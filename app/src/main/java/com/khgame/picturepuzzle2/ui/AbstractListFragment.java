@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle2.ui;
 
 import android.support.v4.app.Fragment;
 

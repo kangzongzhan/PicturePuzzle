@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle2.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,13 +18,13 @@ import android.widget.TextView;
 import com.khgame.picturepuzzle.base.SquaredFragment;
 import com.khgame.picturepuzzle.model.BitmapEntry;
 import com.khgame.picturepuzzle.model.Serial;
-import com.khgame.picturepuzzle.operation.InstallSerialOperation;
 import com.khgame.picturepuzzle.operation.LoadPictureOperation;
 import com.khgame.picturepuzzle.operation.Operation;
 import com.khgame.picturepuzzle.serial.SerialInstallEvent;
 import com.khgame.picturepuzzle.serial.SerialManager;
 import com.khgame.picturepuzzle.serial.SerialManagerImpl;
 import com.khgame.picturepuzzle.serial.SerialsUpdateEvent;
+import com.khgame.picturepuzzle2.R;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -145,7 +145,7 @@ public class SerialListFragment extends SquaredFragment {
             if(serial.installed.equals(Serial.SerialState.INSTALLED)) {
                 Log.d("kzz", "已经安装");
                 Intent intent = new Intent();
-                intent.setClass(getContext(), SerialListActivity.class);
+                intent.setClass(getContext(), SerialPictureListActivity.class);
                 intent.putExtra("uuid", serial.uuid);
                 startActivity(intent);
             }

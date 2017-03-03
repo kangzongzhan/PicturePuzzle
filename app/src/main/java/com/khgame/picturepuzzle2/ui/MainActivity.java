@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle2.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,11 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
+import com.khgame.picturepuzzle2.R;
+import com.khgame.picturepuzzle2.ui.view.TabView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +27,17 @@ public class MainActivity extends SquaredActivity {
     @BindView(R.id.main_viewpager)
     ViewPager viewPager;
 
+    TabView tabView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        initToolbar(toolbar);
         ButterKnife.bind(this);
         viewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
     @Override
@@ -56,6 +62,24 @@ public class MainActivity extends SquaredActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void initToolbar(Toolbar toolbar) {
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        tabView = new TabView(this);
+        tabView.setOnTabClickListener(new TabView.OnTabSelectListener() {
+            @Override
+            public void onLeftSelect() {
+                MainActivity.this.viewPager.setCurrentItem(0);
+            }
+
+            @Override
+            public void onRightSelect() {
+                MainActivity.this.viewPager.setCurrentItem(1);
+            }
+        });
+        int tabWidth = getResources().getDimensionPixelSize(R.dimen.tab_width);
+        int tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
+        toolbar.addView(tabView, new Toolbar.LayoutParams(tabWidth, tabHeight, Gravity.CENTER));
+    }
 
     public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -77,6 +101,27 @@ public class MainActivity extends SquaredActivity {
             return fragments.size();
         }
     }
+
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if(position == 0) {
+                tabView.selectLeft();
+            } else {
+                tabView.selectRight();
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
 
 

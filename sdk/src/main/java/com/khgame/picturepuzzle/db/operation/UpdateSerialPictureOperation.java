@@ -16,12 +16,12 @@ import java.util.List;
  * Created by zkang on 2017/2/19.
  */
 
-public class UpdateClassicPictureOperation extends DBOperation<SerialPicture, Void> {
-    private String uuid;
+public class UpdateSerialPictureOperation extends DBOperation<SerialPicture, Void> {
+    private SerialPicture serialPicture;
     private List<Point> gameData;
 
-    public UpdateClassicPictureOperation(String  uuid, List<Point> gameData) {
-        this.uuid = uuid;
+    public UpdateSerialPictureOperation(SerialPicture serialPicture, List<Point> gameData) {
+        this.serialPicture = serialPicture;
         this.gameData = gameData;
     }
 
@@ -32,18 +32,21 @@ public class UpdateClassicPictureOperation extends DBOperation<SerialPicture, Vo
         switch (gameLevel) {
             case GameLevel.EASY:
                 col = ClassicPictureTable.Cols.EASYDATA;
+                serialPicture.easyData = DisorderUtil.encode(gameData);
                 break;
             case GameLevel.MEDIUM:
                 col = ClassicPictureTable.Cols.MEDIUMDATA;
+                serialPicture.mediumData = DisorderUtil.encode(gameData);
                 break;
             case GameLevel.HARD:
                 col = ClassicPictureTable.Cols.HARDDATA;
+                serialPicture.hardData = DisorderUtil.encode(gameData);
                 break;
         }
 
         ContentValues values = new ContentValues();
         values.put(col, DisorderUtil.encode(gameData));
-        int rows = db.update(ClassicPictureTable.NAME, values, ClassicPictureTable.Cols.UUID + "='" + uuid + "'", null);
+        int rows = db.update(SerialPictureTable.NAME, values, SerialPictureTable.Cols.UUID + "='" + serialPicture.uuid + "'", null);
         if(rows == 0) {
             postFailure(null);
         } else {

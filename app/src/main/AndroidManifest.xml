@@ -12,8 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-            android:label="@string/app_name"
+        <activity android:name=".ui.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +20,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.khgame.picturepuzzle2.ClassicGameActivity"
-            android:label="@string/title_activity_classic_game"
+        <activity android:name="com.khgame.picturepuzzle2.ui.ClassicGameActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SerialListActivity" />
+        <activity android:name="com.khgame.picturepuzzle2.ui.SerialGameActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.SerialPictureListActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

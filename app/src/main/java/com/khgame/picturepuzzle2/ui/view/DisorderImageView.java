@@ -3,6 +3,7 @@ package com.khgame.picturepuzzle2.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.core.Point;
 
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
@@ -27,6 +29,14 @@ public class DisorderImageView extends View {
 
     public DisorderImageView( Context context ) {
         super( context );
+    }
+
+    public DisorderImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public DisorderImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @Override

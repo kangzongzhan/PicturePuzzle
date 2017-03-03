@@ -4,6 +4,7 @@ import android.content.ContentValues;
 
 import com.khgame.picturepuzzle.base.Application;
 import com.khgame.picturepuzzle.db.table.SerialPictureTable;
+import com.khgame.picturepuzzle.model.Serial;
 import com.khgame.picturepuzzle.model.SerialPicture;
 import com.khgame.picturepuzzle.service.model.SerialPictureDto;
 
@@ -14,9 +15,11 @@ import com.khgame.picturepuzzle.service.model.SerialPictureDto;
 public class InsertSerialPictureOperation extends DBOperation<SerialPicture, Void> {
 
     private SerialPictureDto serialPictureDto;
+    private String serialUuid;
 
-    public InsertSerialPictureOperation(SerialPictureDto serialPictureDto) {
+    public InsertSerialPictureOperation(SerialPictureDto serialPictureDto, String serialUuid) {
         this.serialPictureDto = serialPictureDto;
+        this.serialUuid = serialUuid;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class InsertSerialPictureOperation extends DBOperation<SerialPicture, Voi
         ContentValues contentValues = new ContentValues();
         contentValues.put(SerialPictureTable.Cols.UUID, serialPictureDto.uuid);
         contentValues.put(SerialPictureTable.Cols.NAME, serialPictureDto.name);
-        contentValues.put(SerialPictureTable.Cols.SERIALUUID, serialPictureDto.serialUuid);
+        contentValues.put(SerialPictureTable.Cols.SERIALUUID, serialUuid);
         contentValues.put(SerialPictureTable.Cols.URL, serialPictureDto.url);
         contentValues.put(SerialPictureTable.Cols.EASYDATA, serialPictureDto.easyData);
         contentValues.put(SerialPictureTable.Cols.MEDIUMDATA, serialPictureDto.mediumData);
@@ -41,10 +44,10 @@ public class InsertSerialPictureOperation extends DBOperation<SerialPicture, Voi
         SerialPicture serialPicture = new SerialPicture();
         serialPicture.uuid = serialPictureDto.uuid;
         serialPicture.name = serialPictureDto.name;
-        serialPicture.serialUuid = serialPictureDto.serialUuid;
+        serialPicture.serialUuid = serialUuid;
         serialPicture.networkPath = serialPictureDto.url;
         serialPicture.easyData = serialPictureDto.easyData;
-        serialPicture.mediaData = serialPictureDto.mediumData;
+        serialPicture.mediumData = serialPictureDto.mediumData;
         serialPicture.hardData = serialPictureDto.hardData;
 
         postSuccess(serialPicture);

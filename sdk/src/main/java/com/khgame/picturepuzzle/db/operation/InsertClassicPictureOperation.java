@@ -36,7 +36,6 @@ public class InsertClassicPictureOperation extends DBOperation<ClassicPicture, V
             if(id == -1) {
                 postFailure(null);
             } else {
-                picture._id = id;
                 postSuccess(picture);
             }
         } catch (Exception e) {

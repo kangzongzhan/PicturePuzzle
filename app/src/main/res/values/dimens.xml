@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="tab_width">200dp</dimen>
+    <dimen name="tab_height">30dp</dimen>
+    <dimen name="tab_corners">7dp</dimen>
 </resources>

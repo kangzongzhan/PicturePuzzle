@@ -37,6 +37,7 @@ public class GetAllSerialPictureByUuidOperation extends DBOperation<List<SerialP
             SerialPicturePo serialPicturePo = new SerialPicturePo();
             serialPicturePo.id = cursor.getLong(cursor.getColumnIndex(Cols.ID));
             serialPicturePo.name = cursor.getString(cursor.getColumnIndex(Cols.NAME));
+            serialPicturePo.uuid = cursor.getString(cursor.getColumnIndex(Cols.UUID));
             serialPicturePo.serialUuid = cursor.getString(cursor.getColumnIndex(Cols.SERIALUUID));
             serialPicturePo.easyData = cursor.getString(cursor.getColumnIndex(Cols.EASYDATA));
             serialPicturePo.mediumData = cursor.getString(cursor.getColumnIndex(Cols.MEDIUMDATA));

@@ -11,7 +11,7 @@ public class SerialPicture {
     public String serialUuid;
     public String networkPath;
     public String easyData;
-    public String mediaData;
+    public String mediumData;
     public String hardData;
 
 }

@@ -1,6 +1,7 @@
 package com.khgame.picturepuzzle.serial;
 
 import com.khgame.picturepuzzle.model.Serial;
+import com.khgame.picturepuzzle.model.SerialPicture;
 
 import java.util.List;
 
@@ -41,6 +42,17 @@ public interface SerialManager {
      * get the serial, maybe null if never select a serial to start
      */
     public Serial getCurrentSerial();
+
+    /**
+     * update current serial
+     */
+
+    public void updateCurrentSerial();
+
+    /**
+     * get current serial picture list
+     */
+    public List<SerialPicture> getCurrentSerialPictureList();
 
     /**
      * should be invoked when exit the serial

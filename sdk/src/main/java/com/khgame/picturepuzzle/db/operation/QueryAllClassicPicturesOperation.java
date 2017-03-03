@@ -28,7 +28,6 @@ public class QueryAllClassicPicturesOperation extends DBOperation<List, Void> {
         if(cursor != null) {
             for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 ClassicPicture picture = new ClassicPicture();
-                picture._id = cursor.getLong(cursor.getColumnIndex(Cols.ID));
                 picture.uuid = cursor.getString(cursor.getColumnIndex(Cols.UUID));
                 picture.networkPath = cursor.getString(cursor.getColumnIndex(Cols.NETWORKPATH));
                 picture.easyData = cursor.getString(cursor.getColumnIndex(Cols.EASYDATA));
