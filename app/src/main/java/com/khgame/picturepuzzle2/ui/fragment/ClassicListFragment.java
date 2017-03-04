@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2.ui;
+package com.khgame.picturepuzzle2.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +23,7 @@ import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.db.operation.QueryAllClassicPicturesOperation;
 import com.khgame.picturepuzzle2.App;
 import com.khgame.picturepuzzle2.R;
+import com.khgame.picturepuzzle2.ui.activity.ClassicGameActivity;
 import com.khgame.picturepuzzle2.ui.view.DisorderImageView;
 
 import java.util.ArrayList;

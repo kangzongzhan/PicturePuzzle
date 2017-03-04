@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2.ui;
+package com.khgame.picturepuzzle2.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import com.khgame.picturepuzzle.classic.ClassicManagerImpl;
 import com.khgame.picturepuzzle.classic.InitClassicPictureFinishEvent;
 import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle2.R;
-import com.khgame.picturepuzzle2.ui.MainActivity;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

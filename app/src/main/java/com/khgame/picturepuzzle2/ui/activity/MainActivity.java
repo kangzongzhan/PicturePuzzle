@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2.ui;
+package com.khgame.picturepuzzle2.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
 import com.khgame.picturepuzzle2.R;
+import com.khgame.picturepuzzle2.ui.fragment.ClassicListFragment;
+import com.khgame.picturepuzzle2.ui.fragment.SerialListFragment;
 import com.khgame.picturepuzzle2.ui.view.TabView;
 
 import java.util.ArrayList;

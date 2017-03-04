@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 
@@ -33,4 +35,7 @@ public abstract class SquaredFragment extends Fragment{
             bus.unregister(this);
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    void onEvent(String s){}
 }

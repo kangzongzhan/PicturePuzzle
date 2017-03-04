@@ -1,9 +1,8 @@
-package com.khgame.picturepuzzle2.ui;
+package com.khgame.picturepuzzle2.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
-import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
 import com.khgame.picturepuzzle.model.BitmapEntry;
@@ -37,11 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by zkang on 2017/2/26.
- */
-
-public class SerialPictureListActivity extends SquaredActivity {
+public class SerialPicturesActivity extends SquaredActivity {
 
     private Serial serial;
     private SerialManager serialManager = SerialManagerImpl.getInstance();
@@ -50,9 +43,9 @@ public class SerialPictureListActivity extends SquaredActivity {
     GridView gridView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_serial_picture_list);
+        setContentView(R.layout.activity_serial_pictures);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
@@ -112,8 +105,8 @@ public class SerialPictureListActivity extends SquaredActivity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             SerialPicture serialPicture = (SerialPicture) getItem(i);
-            Context context = SerialPictureListActivity.this;
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            Context context = SerialPicturesActivity.this;
+            LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.serial_picture_item, null);
 
             final DisorderImageView imageView = (DisorderImageView) view.findViewById(R.id.image);
@@ -148,7 +141,7 @@ public class SerialPictureListActivity extends SquaredActivity {
 
         private LinearLayout.LayoutParams getLayoutParams() {
             android.graphics.Point point = new android.graphics.Point();
-            SerialPictureListActivity.this.getWindowManager().getDefaultDisplay().getSize(point);
+            SerialPicturesActivity.this.getWindowManager().getDefaultDisplay().getSize(point);
             int displayWidth = point.x;
             int imageW = displayWidth / 3;
             int imageH = imageW * 4 / 3;
@@ -160,10 +153,9 @@ public class SerialPictureListActivity extends SquaredActivity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             SerialPicture serialPicture = serialManager.getCurrentSerialPictureList().get(i);
-            Intent intent = new Intent(SerialPictureListActivity.this, SerialGameActivity.class);
+            Intent intent = new Intent(SerialPicturesActivity.this, SerialGameActivity.class);
             intent.putExtra("uuid", serialPicture.uuid);
             startActivity(intent);
         }
     };
-
 }
