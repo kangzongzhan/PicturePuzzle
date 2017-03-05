@@ -22,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 
+import com.khgame.picturepuzzle.base.SquaredFragment;
 import com.khgame.picturepuzzle.model.BitmapEntry;
 import com.khgame.picturepuzzle.model.ClassicPicture;
 import com.khgame.picturepuzzle.operation.CopyUriPicture;
@@ -56,7 +57,7 @@ import butterknife.OnClick;
  * Created by zkang on 2017/1/7.
  */
 
-public class ClassicListFragment extends AbstractListFragment {
+public class ClassicListFragment extends SquaredFragment {
 
     private static final String TAG = "ClassicListFragment";
     private int gameLevel = GameLevel.EASY;
@@ -94,6 +95,11 @@ public class ClassicListFragment extends AbstractListFragment {
         gridView.setAdapter(listAdapter);
         gridView.setOnItemClickListener(onItemClickListener);
         updateFabImage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         listAdapter.loadData();
     }
 
@@ -259,7 +265,7 @@ public class ClassicListFragment extends AbstractListFragment {
                         disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
                         break;
                     case GameLevel.HARD:
-                        disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
+                        disorderImageView.setPositionList(DisorderUtil.decode(picture.hardData));
                         break;
                 }
                 progressHit.setGameData(picture.easyData, picture.mediumData, picture.hardData);

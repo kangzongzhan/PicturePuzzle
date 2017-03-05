@@ -2,6 +2,7 @@ package com.khgame.picturepuzzle2.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
 import com.khgame.picturepuzzle.core.DisorderUtil;
@@ -41,6 +43,9 @@ public class SerialPicturesActivity extends SquaredActivity {
     @BindView(R.id.gridview)
     GridView gridView;
 
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,12 @@ public class SerialPicturesActivity extends SquaredActivity {
         serial = serialManager.getSerialByUuid(uuid);
         serialManager.startSerial(serial);
         toolbar.setTitle(serial.name);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateFabImage();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -81,6 +92,7 @@ public class SerialPicturesActivity extends SquaredActivity {
                 serial.gameLevel = GameLevel.EASY;
                 break;
         }
+        updateFabImage();
         serialManager.updateCurrentSerial();
         adapter.notifyDataSetChanged();
     }
@@ -118,13 +130,13 @@ public class SerialPicturesActivity extends SquaredActivity {
             return disorderView;
         }
 
-        private LinearLayout.LayoutParams getLayoutParams() {
+        private ListView.LayoutParams getLayoutParams() {
             android.graphics.Point point = new android.graphics.Point();
             SerialPicturesActivity.this.getWindowManager().getDefaultDisplay().getSize(point);
             int displayWidth = point.x;
             int imageW = displayWidth / 3;
             int imageH = imageW * 4 / 3;
-            return new LinearLayout.LayoutParams(imageW, imageH);
+            return new ListView.LayoutParams(imageW, imageH);
         }
 
         class ViewHolder {
@@ -138,7 +150,9 @@ public class SerialPicturesActivity extends SquaredActivity {
 
             public ViewHolder(View view) {
                 view.setTag(this);
-                ButterKnife.bind(this, view);
+                disorderImageView = (DisorderImageView) view.findViewById(R.id.disorderImageView);
+                progressHit = (ProgressHit) view.findViewById(R.id.progressBar);
+                //ButterKnife.bind(this, view);
             }
 
             public void setSerialPicture(final SerialPicture picture) {
@@ -160,7 +174,7 @@ public class SerialPicturesActivity extends SquaredActivity {
                         disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
                         break;
                     case GameLevel.HARD:
-                        disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
+                        disorderImageView.setPositionList(DisorderUtil.decode(picture.hardData));
                         break;
                 }
                 progressHit.setGameData(picture.easyData, picture.mediumData, picture.hardData);
@@ -178,4 +192,18 @@ public class SerialPicturesActivity extends SquaredActivity {
             startActivity(intent);
         }
     };
+
+    private void updateFabImage() {
+        switch (serial.gameLevel) {
+            case GameLevel.EASY:
+                fab.setImageResource(R.drawable.ic_one);
+                break;
+            case GameLevel.MEDIUM:
+                fab.setImageResource(R.drawable.ic_two);
+                break;
+            case GameLevel.HARD:
+                fab.setImageResource(R.drawable.ic_three);
+                break;
+        }
+    }
 }
