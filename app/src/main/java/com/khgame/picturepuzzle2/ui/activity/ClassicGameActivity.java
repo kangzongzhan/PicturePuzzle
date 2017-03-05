@@ -2,10 +2,13 @@ package com.khgame.picturepuzzle2.ui.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
+import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.model.BitmapEntry;
 import com.khgame.picturepuzzle.model.ClassicPicture;
 import com.khgame.picturepuzzle.operation.LoadPictureOperation;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ClassicGameActivity extends SquaredActivity {
 
@@ -29,8 +33,12 @@ public class ClassicGameActivity extends SquaredActivity {
     private int gameLevel;
     private ClassicPicture picture;
     private Bitmap bitmap;
+
     @BindView(R.id.gameview)
     GameView gameView;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,19 +49,46 @@ public class ClassicGameActivity extends SquaredActivity {
         gameLevel = getIntent().getIntExtra("GameLevel", GameLevel.EASY);
         uuid = getIntent().getStringExtra("uuid");
         initGameData();
-
+        updateFabImage();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if(gameView.isStarted()) {
-            List<Point> gameData = gameView.getGameData();
-            new UpdateClassicPictureOperation(uuid, gameData).enqueue();
+            saveDataToDB();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.fab)
+    void onClickFab() {
+        saveDataToDB();
+
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                gameLevel = GameLevel.MEDIUM;
+                break;
+            case GameLevel.MEDIUM:
+                gameLevel = GameLevel.HARD;
+                break;
+            case GameLevel.HARD:
+                gameLevel = GameLevel.EASY;
+                break;
+        }
+        updateFabImage();
+        startGame();
     }
 
     private void initGameData() {
@@ -92,11 +127,38 @@ public class ClassicGameActivity extends SquaredActivity {
     private GameView.GameOverListener gameOverListener = new GameView.GameOverListener() {
         @Override
         public void onGameOver() {
-            List<Point> gameData = gameView.getGameData();
-            new UpdateClassicPictureOperation(uuid, gameData).enqueue();
+            saveDataToDB();
             Snackbar.make(gameView, "Game Over", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
     };
 
+
+    private void saveDataToDB() {
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                picture.easyData = DisorderUtil.encode(gameView.getGameData());
+                break;
+            case GameLevel.MEDIUM:
+                picture.mediumData = DisorderUtil.encode(gameView.getGameData());
+                break;
+            case GameLevel.HARD:
+                picture.hardData = DisorderUtil.encode(gameView.getGameData());
+                break;
+        }
+        new UpdateClassicPictureOperation(picture).enqueue();
+    }
+    private void updateFabImage() {
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                fab.setImageResource(R.drawable.ic_one);
+                break;
+            case GameLevel.MEDIUM:
+                fab.setImageResource(R.drawable.ic_two);
+                break;
+            case GameLevel.HARD:
+                fab.setImageResource(R.drawable.ic_three);
+                break;
+        }
+    }
 }

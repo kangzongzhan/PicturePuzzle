@@ -101,6 +101,12 @@ public class DisorderImageView extends View {
         }
     }
 
+    public void recycBitmap() {
+        if(bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+        }
+    }
+
     // when bitmap and list both ready, image can be draw
     private boolean isReady() {
 

@@ -10,7 +10,7 @@
         android:background="@drawable/tab_left"
         android:textColor="@drawable/tab_text_color"
         android:gravity="center"
-        android:text="Classic"/>
+        android:text="@string/classic"/>
     <TextView
         android:id="@+id/right"
         android:layout_width="0dp"
@@ -19,6 +19,6 @@
         android:background="@drawable/tab_right"
         android:textColor="@drawable/tab_text_color"
         android:gravity="center"
-        android:text="Serial"/>
+        android:text="@string/serial"/>
 
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.khgame.picturepuzzle2.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
 import com.khgame.picturepuzzle.core.DisorderUtil;
@@ -26,6 +24,7 @@ import com.khgame.picturepuzzle.serial.SerialManagerImpl;
 import com.khgame.picturepuzzle.serial.SerialPicturesLoadFinishEvent;
 import com.khgame.picturepuzzle2.R;
 import com.khgame.picturepuzzle2.ui.view.DisorderImageView;
+import com.khgame.picturepuzzle2.ui.view.ProgressHit;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -104,39 +103,19 @@ public class SerialPicturesActivity extends SquaredActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            SerialPicture serialPicture = (SerialPicture) getItem(i);
-            Context context = SerialPicturesActivity.this;
-            LayoutInflater inflater = LayoutInflater.from(context);
-            view = inflater.inflate(R.layout.serial_picture_item, null);
 
-            final DisorderImageView imageView = (DisorderImageView) view.findViewById(R.id.image);
-            TextView textView = (TextView) view.findViewById(R.id.title);
-            imageView.setLayoutParams(getLayoutParams());
-            textView.setText(serialPicture.name);
-            imageView.setTag(serialPicture.uuid);
-            new LoadPictureOperation(serialPicture.uuid, serialPicture.networkPath)
-                    .callback(new Operation.Callback<BitmapEntry, Void>() {
-                        @Override
-                        public void onSuccessMainThread(BitmapEntry bitmapEntry) {
-                            imageView.setBitmap(bitmapEntry.bitmap);
-                        }
-                    }).enqueue();
-
-            String gameData = null;
-            switch (serial.gameLevel) {
-                case GameLevel.EASY:
-                    gameData = serialPicture.easyData;
-                    break;
-                case GameLevel.MEDIUM:
-                    gameData = serialPicture.mediumData;
-                    break;
-                case GameLevel.HARD:
-                    gameData = serialPicture.hardData;
-                    break;
+            View disorderView;
+            ViewHolder viewHolder;
+            if(view != null) {
+                disorderView = view;
+                viewHolder = (ViewHolder) disorderView.getTag();
+            } else {
+                disorderView = LayoutInflater.from(SerialPicturesActivity.this).inflate(R.layout.classic_disorder, null);
+                disorderView.setLayoutParams(getLayoutParams());
+                viewHolder = new ViewHolder(disorderView);
             }
-            imageView.setPositionList(DisorderUtil.decode(gameData));
-            imageView.setLayoutParams(getLayoutParams());
-            return view;
+            viewHolder.setSerialPicture((SerialPicture) getItem(i));
+            return disorderView;
         }
 
         private LinearLayout.LayoutParams getLayoutParams() {
@@ -147,6 +126,47 @@ public class SerialPicturesActivity extends SquaredActivity {
             int imageH = imageW * 4 / 3;
             return new LinearLayout.LayoutParams(imageW, imageH);
         }
+
+        class ViewHolder {
+            @BindView(R.id.disorderImageView)
+            DisorderImageView disorderImageView;
+
+            @BindView(R.id.progressBar)
+            ProgressHit progressHit;
+
+            SerialPicture serialPicture;
+
+            public ViewHolder(View view) {
+                view.setTag(this);
+                ButterKnife.bind(this, view);
+            }
+
+            public void setSerialPicture(final SerialPicture picture) {
+                this.serialPicture = picture;
+                new LoadPictureOperation(picture.uuid, picture.networkPath).callback(new Operation.Callback<BitmapEntry, Void>() {
+                    @Override
+                    public void onSuccessMainThread(BitmapEntry bitmapEntry) {
+                        if(serialPicture.uuid.equals(bitmapEntry.uuid)) {
+                            disorderImageView.setBitmap(bitmapEntry.bitmap);
+                        }
+                    }
+                }).enqueue();
+
+                switch (serial.gameLevel) {
+                    case GameLevel.EASY:
+                        disorderImageView.setPositionList(DisorderUtil.decode(picture.easyData));
+                        break;
+                    case GameLevel.MEDIUM:
+                        disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
+                        break;
+                    case GameLevel.HARD:
+                        disorderImageView.setPositionList(DisorderUtil.decode(picture.mediumData));
+                        break;
+                }
+                progressHit.setGameData(picture.easyData, picture.mediumData, picture.hardData);
+            }
+        }
+
     };
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {

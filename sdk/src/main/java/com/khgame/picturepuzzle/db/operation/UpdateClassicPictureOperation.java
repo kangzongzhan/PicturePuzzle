@@ -17,33 +17,18 @@ import java.util.List;
  */
 
 public class UpdateClassicPictureOperation extends DBOperation<SerialPicture, Void> {
-    private String uuid;
-    private List<Point> gameData;
-
-    public UpdateClassicPictureOperation(String  uuid, List<Point> gameData) {
-        this.uuid = uuid;
-        this.gameData = gameData;
+    private ClassicPicture classicPicture;
+    public UpdateClassicPictureOperation(ClassicPicture classicPicture) {
+        this.classicPicture = classicPicture;
     }
 
     @Override
     protected void doWork() {
-        int gameLevel = GameLevel.getLevel(gameData);
-        String col = null;
-        switch (gameLevel) {
-            case GameLevel.EASY:
-                col = ClassicPictureTable.Cols.EASYDATA;
-                break;
-            case GameLevel.MEDIUM:
-                col = ClassicPictureTable.Cols.MEDIUMDATA;
-                break;
-            case GameLevel.HARD:
-                col = ClassicPictureTable.Cols.HARDDATA;
-                break;
-        }
-
         ContentValues values = new ContentValues();
-        values.put(col, DisorderUtil.encode(gameData));
-        int rows = db.update(ClassicPictureTable.NAME, values, ClassicPictureTable.Cols.UUID + "='" + uuid + "'", null);
+        values.put(ClassicPictureTable.Cols.EASYDATA, classicPicture.easyData);
+        values.put(ClassicPictureTable.Cols.MEDIUMDATA, classicPicture.mediumData);
+        values.put(ClassicPictureTable.Cols.HARDDATA, classicPicture.hardData);
+        int rows = db.update(ClassicPictureTable.NAME, values, ClassicPictureTable.Cols.UUID + "='" + classicPicture.uuid + "'", null);
         if(rows == 0) {
             postFailure(null);
         } else {

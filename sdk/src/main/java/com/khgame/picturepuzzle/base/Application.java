@@ -1,6 +1,7 @@
 package com.khgame.picturepuzzle.base;
 
 import android.os.AsyncTask;
+import android.support.multidex.MultiDexApplication;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -21,7 +22,7 @@ import retrofit2.Retrofit;
  * Created by zkang on 2017/2/24.
  */
 
-public abstract class Application extends android.app.Application {
+public abstract class Application extends MultiDexApplication {
     private static Application instance;
 
     @Override
@@ -38,7 +39,7 @@ public abstract class Application extends android.app.Application {
 
     public static File PictureDir(String uuid) {
         String str = uuid.substring(0, 2);
-        File dir = new File(instance.getCacheDir(), str);
+        File dir = new File(instance.getFilesDir(), str);
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -48,30 +49,12 @@ public abstract class Application extends android.app.Application {
         return new File(PictureDir(uuid), uuid);
     }
 
-
-    public static File ClassicPictureDir() {
-        File dir = new File(instance.getCacheDir(), "classic");
+    public static File TakePhotoFile() {
+        File dir = new File(instance.getCacheDir(), "take_photo");
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        return dir;
-    }
-
-    public static File SerialCoverPictureDir() {
-        File dir = new File(instance.getCacheDir().getAbsolutePath() + "/serial/covers");
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        return dir;
-    }
-
-
-    public static File SerialPictureDir(String serialName) {
-        File dir = new File(instance.getCacheDir().getAbsolutePath() + "/serial/" + serialName);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        return dir;
+        return new File(dir, "photo");
     }
 
     public void initImageLoader() {

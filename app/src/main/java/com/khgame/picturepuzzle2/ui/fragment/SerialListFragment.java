@@ -47,7 +47,7 @@ public class SerialListFragment extends SquaredFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.three_col_listview, null);
+        return inflater.inflate(R.layout.fragment_serial_list, null);
     }
 
     @Override
