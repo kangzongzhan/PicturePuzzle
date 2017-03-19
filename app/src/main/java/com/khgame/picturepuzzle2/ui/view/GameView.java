@@ -5,10 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -29,6 +31,9 @@ import static com.khgame.picturepuzzle.core.GameLevel.yNums;
 
 public class GameView extends FrameLayout {
 
+    private FrameLayout backLayout; // 背景
+    private FrameLayout fontLayout; // 前景
+
     private List<Point> gameData;
     private Bitmap bitmap;
 
@@ -45,17 +50,24 @@ public class GameView extends FrameLayout {
 
     public GameView(Context context) {
         super(context);
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        init();
     }
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        init();
     }
 
     public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        init();
+    }
+
+    private void init() {
+        backLayout = new FrameLayout(getContext());
+        addView(backLayout, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        fontLayout = new FrameLayout(getContext());
+        addView(fontLayout, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     public void start(List<Point> gameData, Bitmap bitmap) {
@@ -226,7 +238,8 @@ public class GameView extends FrameLayout {
     }
 
     public void animateIn() {
-        this.removeAllViews();
+        backLayout.removeAllViews();
+        fontLayout.removeAllViews();
         viewMap.clear();
         final int w = bitmap.getWidth() / xNums(gameData);
         final int h = bitmap.getHeight() / yNums(gameData);
@@ -239,10 +252,11 @@ public class GameView extends FrameLayout {
             if(realPoint.y != yNums(gameData)) {
                 b = Bitmap.createBitmap(bitmap, realPoint.x * w, realPoint.y * h, w, h);
             }
-            addView(nowPoint, realPoint, b);
+            addBackView(nowPoint, realPoint);
+            addFontView(nowPoint, realPoint, b);
         }
     }
-    private void addView(Point nowPoint, Point realPoint, Bitmap bitmap) {
+    private void addFontView(Point nowPoint, Point realPoint, Bitmap bitmap) {
         ImageView imageView = new ImageView(getContext());
         imageView.setImageBitmap(bitmap);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -250,8 +264,17 @@ public class GameView extends FrameLayout {
         LayoutParams lp = new LayoutParams(unitWidth, unitHeight);
         lp.leftMargin = xOffset + nowPoint.x * unitWidth;
         lp.topMargin = yOffset + nowPoint.y * unitHeight;
-        addView(imageView, lp);
+        fontLayout.addView(imageView, lp);
         viewMap.put(realPoint, imageView);
+    }
+
+    private void addBackView(Point nowPoint, Point realPoint) {
+        View view = new View(getContext());
+        view.setBackgroundColor(Color.RED);
+        LayoutParams lp = new LayoutParams(unitWidth, unitHeight);
+        lp.leftMargin = xOffset + nowPoint.x * unitWidth;
+        lp.topMargin = yOffset + nowPoint.y * unitHeight;
+        backLayout.addView(view, lp);
     }
 
     private void calculateOffset() {

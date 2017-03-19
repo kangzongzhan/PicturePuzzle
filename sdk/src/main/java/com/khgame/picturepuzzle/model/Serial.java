@@ -9,26 +9,37 @@ import android.os.Bundle;
 public class Serial implements Comparable<Serial>{
     public String uuid;
     public String name;
-    public String installed;
+    public State installState;
+    public int installProgress;
     public int gameLevel;
     public String networkCoverPath;
     public String themeColor;
 
     @Override
-    public int compareTo(Serial o) {
-        if(o.installed.equals(this.installed)) {
-            return name.compareTo(o.name);
+    public int compareTo(Serial serial) {
+        if (serial.installState == this.installState) {
+            return name.compareTo(serial.name);
         }
-        if(this.installed.equals(SerialState.INSTALLED) || o.installed.equals(SerialState.UNINSTALL)) {
-            return -1;
+        if (this.installState == State.INSTALLED) {
+            return 1;
         }
-        return 1;
+        if (serial.installState == State.UNINSTALL) {
+            return 1;
+        }
+        return name.compareTo(serial.name);
     }
 
-    public static class SerialState {
-        public static final String INSTALLED = "INSTALLED";
-        public static final String INSTALLING = "INSTALLING";
-        public static final String UNINSTALL = "UNINSTALL";
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Serial) {
+            Serial serial = (Serial) obj;
+            return serial.uuid.equals(this.uuid);
+        }
+        return false;
+    }
+
+    public enum State {
+        INSTALLED, INSTALLING, UNINSTALL
     }
 
 }

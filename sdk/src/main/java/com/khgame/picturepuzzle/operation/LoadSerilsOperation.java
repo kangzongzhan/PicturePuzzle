@@ -42,14 +42,13 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
 
     private List<Serial> merge() {
         List<Serial> list = new ArrayList<>();
-
         for(SerialPo serialPo: listPos) {
             Serial serial = new Serial();
             serial.uuid = serialPo.uuid;
             serial.name = serialPo.name;
             serial.gameLevel = serialPo.gameLevel;
             serial.networkCoverPath = serialPo.networkCoverPath;
-            serial.installed = Serial.SerialState.INSTALLED;
+            serial.installState = Serial.State.INSTALLED;
             list.add(serial);
         }
 
@@ -61,7 +60,7 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
             serial.uuid = serialDto.uuid;
             serial.name = serialDto.name;
             serial.networkCoverPath = serialDto.coverUrl;
-            serial.installed = Serial.SerialState.UNINSTALL;
+            serial.installState = Serial.State.UNINSTALL;
             list.add(serial);
         }
 

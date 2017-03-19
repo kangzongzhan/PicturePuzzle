@@ -37,5 +37,5 @@ public abstract class SquaredFragment extends Fragment{
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    void onEvent(String s){}
+    public void onEvent(String s){}
 }

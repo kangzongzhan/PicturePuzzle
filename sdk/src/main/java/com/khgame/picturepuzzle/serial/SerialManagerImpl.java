@@ -78,33 +78,6 @@ public class SerialManagerImpl implements SerialManager {
     }
 
     @Override
-    public void install(final Serial serial) {
-        serial.installed = Serial.SerialState.INSTALLING;
-
-        bus.post(new SerialInstallEvent(SerialInstallEvent.EventType.BEGIN));
-        new GetSerialPictureByUuid(serial.uuid).callback(new Operation.Callback<List<SerialPictureDto>, Void>() {
-            @Override
-            public void onSuccess(List<SerialPictureDto> serialPictureDtos) {
-                new DeleteSerialPicturesByUuid(serial.uuid).execute();
-                for (SerialPictureDto serialPictureDto: serialPictureDtos) {
-                    new DownloadPictureOperation(serialPictureDto.uuid, serialPictureDto.url).execute();
-                    new InsertSerialPictureOperation(serialPictureDto, serial.uuid).execute();
-                    int progress = serialPictureDtos.indexOf(serialPictureDto) / serialPictureDtos.size();
-                    bus.post(new SerialInstallEvent(SerialInstallEvent.EventType.INSTALLING, progress));
-                }
-                new InsertSerialOperation(serial).callback(new Operation.Callback<Serial, Void>() {
-                    @Override
-                    public void onSuccess(Serial serial) {
-                        serial.installed = Serial.SerialState.INSTALLED;
-                    }
-                }).execute();
-                Collections.sort(serialList);
-                bus.post(new SerialInstallEvent(SerialInstallEvent.EventType.END));
-            }
-        }).enqueue();
-    }
-
-    @Override
     public List<Serial> getSerials() {
         return serialList;
     }
@@ -198,7 +171,7 @@ public class SerialManagerImpl implements SerialManager {
             serial.name = serialPo.name;
             serial.gameLevel = serialPo.gameLevel;
             serial.networkCoverPath = serialPo.networkCoverPath;
-            serial.installed = Serial.SerialState.INSTALLED;
+            serial.installState = Serial.State.INSTALLED;
             list.add(serial);
         }
 
@@ -210,7 +183,7 @@ public class SerialManagerImpl implements SerialManager {
             serial.uuid = serialDto.uuid;
             serial.name = serialDto.name;
             serial.networkCoverPath = serialDto.coverUrl;
-            serial.installed = Serial.SerialState.UNINSTALL;
+            serial.installState = Serial.State.UNINSTALL;
             list.add(serial);
         }
 

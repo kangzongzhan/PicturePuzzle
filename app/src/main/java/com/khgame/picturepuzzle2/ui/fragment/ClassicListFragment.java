@@ -1,6 +1,8 @@
 package com.khgame.picturepuzzle2.ui.fragment;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -10,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +26,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import com.khgame.picturepuzzle.base.SquaredFragment;
+import com.khgame.picturepuzzle.db.operation.DeleteClassicPictureByUuid;
 import com.khgame.picturepuzzle.model.BitmapEntry;
 import com.khgame.picturepuzzle.model.ClassicPicture;
 import com.khgame.picturepuzzle.operation.CopyUriPicture;
@@ -52,11 +56,14 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by zkang on 2017/1/7.
  */
 
+@RuntimePermissions
 public class ClassicListFragment extends SquaredFragment {
 
     private static final String TAG = "ClassicListFragment";
@@ -93,7 +100,6 @@ public class ClassicListFragment extends SquaredFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         gridView.setAdapter(listAdapter);
-        gridView.setOnItemClickListener(onItemClickListener);
         updateFabImage();
     }
 
@@ -178,7 +184,7 @@ public class ClassicListFragment extends SquaredFragment {
     /**
      * classic list view adapter
      */
-    class ClassicListAdapter extends BaseAdapter {
+    class ClassicListAdapter extends BaseAdapter  {
 
         List<ClassicPicture> pictures = new ArrayList<>();
         @Override
@@ -232,7 +238,7 @@ public class ClassicListFragment extends SquaredFragment {
             }).enqueue();
         }
 
-        class ViewHolder {
+        class ViewHolder implements View.OnLongClickListener, View.OnClickListener{
             @BindView(R.id.disorderImageView)
             DisorderImageView disorderImageView;
 
@@ -243,6 +249,8 @@ public class ClassicListFragment extends SquaredFragment {
 
             public ViewHolder(View view) {
                 view.setTag(this);
+                view.setOnClickListener(this);
+                view.setOnLongClickListener(this);
                 ButterKnife.bind(this, view);
             }
 
@@ -270,21 +278,40 @@ public class ClassicListFragment extends SquaredFragment {
                 }
                 progressHit.setGameData(picture.easyData, picture.mediumData, picture.hardData);
             }
+
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClassicListFragment.this.getContext());
+                builder.setMessage("确定要删除吗？")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new DeleteClassicPictureByUuid(classicPicture.uuid).callback(new Operation.Callback<Void, Void>() {
+                                    @Override
+                                    public void onSuccessMainThread(Void aVoid) {
+                                        loadData();
+                                    }
+                                }).enqueue();
+                            }
+                        })
+                        .setNegativeButton("否", null);
+                builder.create().show();
+                return true;
+            }
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), ClassicGameActivity.class);
+                intent.putExtra("GameLevel", gameLevel);
+                intent.putExtra("uuid", classicPicture.uuid);
+                startActivity(intent);
+            }
         }
     }
 
     private ClassicListAdapter listAdapter = new ClassicListAdapter();
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            ClassicPicture picture = (ClassicPicture) listAdapter.getItem(position);
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), ClassicGameActivity.class);
-            intent.putExtra("GameLevel", gameLevel);
-            intent.putExtra("uuid", picture.uuid);
-            startActivity(intent);
-        }
-    };
+
 
     private void selectGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -297,7 +324,11 @@ public class ClassicListFragment extends SquaredFragment {
 //            startActivityForResult(intent, IMAGE_REQUEST_CODE);
 //        }
     }
-    private void takePhoto() {
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void takePhoto() {
+
+
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         File outputImage = new File(path, UUID.randomUUID().toString());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

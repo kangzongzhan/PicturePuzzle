@@ -19,11 +19,6 @@ public interface SerialManager {
 
 
     /**
-     * download all serial picture and save as local
-     */
-    public void install(Serial serial);
-
-    /**
      * get all serials
      */
     public List<Serial> getSerials();
