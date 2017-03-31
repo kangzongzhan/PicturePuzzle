@@ -1,7 +1,12 @@
 package com.khgame.picturepuzzle.core;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static com.khgame.picturepuzzle.core.GameLevel.getLevel;
 import static com.khgame.picturepuzzle.core.GameLevel.xNums;
@@ -12,7 +17,7 @@ import static com.khgame.picturepuzzle.core.GameLevel.yNums;
  */
 
 public class DisorderUtil {
-
+    private static final String TAG = "DisorderUtil";
     public static String encode(List<Point> list) {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
@@ -64,32 +69,33 @@ public class DisorderUtil {
         list.add(whitePoint);
 
         // #2 打乱list
+        outter:
         while(true) {
-
+            Log.d(TAG, "disordering...gameLevel:" + gameLevel + ", innerDisorder:" + innerDisorder(list) + ", outterDisorder:" + outterDisorder(list));
             List<Point> listAfterUp = swipUp(list);
             List<Point> listAfterDown = swipDown(list);
             List<Point> listAfterRight = swipRight(list);
             List<Point> listAfterLeft = swipLeft(list);
+            list = chooseList(listAfterUp, listAfterRight, listAfterDown, listAfterLeft);
 
-            List<Point> bestDisorderList = listAfterUp;
-            bestDisorderList = innerDisorder(bestDisorderList) + outterDisorder(bestDisorderList)
-                    > innerDisorder(listAfterDown) + outterDisorder(listAfterDown)
-                    ? bestDisorderList : listAfterDown;
-
-            bestDisorderList = innerDisorder(bestDisorderList) + outterDisorder(bestDisorderList)
-                    > innerDisorder(listAfterRight) + outterDisorder(listAfterRight)
-                    ? bestDisorderList : listAfterRight;
-
-            bestDisorderList = innerDisorder(bestDisorderList) + outterDisorder(bestDisorderList)
-                    > innerDisorder(listAfterLeft) + outterDisorder(listAfterLeft)
-                    ? bestDisorderList : listAfterLeft;
-
-            list = bestDisorderList;
-            if(innerDisorder(list) + outterDisorder(list) > 20 * gameLevel) {
-                break;
+            switch (gameLevel) {
+                case GameLevel.EASY:
+                    if (innerDisorder(list) + outterDisorder(list) > 50) {
+                        break outter;
+                    }
+                    break;
+                case GameLevel.MEDIUM:
+                    if (innerDisorder(list) + outterDisorder(list) > 170) {
+                        break outter;
+                    }
+                    break;
+                case GameLevel.HARD:
+                    if (innerDisorder(list) + outterDisorder(list) > 450) {
+                        break outter;
+                    }
+                    break;
             }
         }
-
         return list;
     }
 
@@ -102,7 +108,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(copyList);
         int targetIndex = whiteIndex + xNums;
 
-        if(targetIndex > list.size()-1) { //不可上划
+        if(targetIndex > list.size() - 1 || !valideIndex(list, targetIndex)) { //不可上划
             return copyList;
         }
 
@@ -124,7 +130,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(copyList);
         int targetIndex = whiteIndex - xNums;
 
-        if(targetIndex < 0) { //不可下划
+        if(targetIndex < 0 || !valideIndex(list, targetIndex)) { //不可下划
             return copyList;
         }
 
@@ -146,7 +152,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(copyList);
         int targetIndex = whiteIndex + 1;
 
-        if(targetIndex % xNums == 0 || whiteIndex == list.size() - 1) { //不可左划
+        if(targetIndex % xNums == 0 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可左划
             return copyList;
         }
 
@@ -168,7 +174,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(copyList);
         int targetIndex = whiteIndex - 1;
 
-        if(targetIndex % xNums == xNums -1 || whiteIndex == list.size() - 1) { //不可右划
+        if(targetIndex % xNums == xNums -1 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可右划
             return copyList;
         }
 
@@ -259,4 +265,60 @@ public class DisorderUtil {
         return sum/2;
     }
 
+    /**
+     * 按照 40% 30% 20% 10%的概率选择
+     */
+    private static List<Point> chooseList(List<Point> up, List<Point> right, List<Point> down, List<Point> left) {
+        List<DisorderValue> disorderValues = new ArrayList<>();
+        disorderValues.add(new DisorderValue(up));
+        disorderValues.add(new DisorderValue(right));
+        disorderValues.add(new DisorderValue(down));
+        disorderValues.add(new DisorderValue(left));
+        Collections.sort(disorderValues);
+
+        int random = (int) (Math.random() * 10);
+        switch(random) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                return disorderValues.get(0).list;
+            case 4:
+            case 5:
+            case 6:
+                return disorderValues.get(1).list;
+            case 7:
+            case 8:
+                return disorderValues.get(2).list;
+            case 9:
+                return disorderValues.get(3).list;
+        }
+        return up;
+    }
+
+    private static boolean valideIndex(List<Point> list, int index) {
+        return index < list.size() && index >= 0;
+    }
+
+    static class DisorderValue implements Comparable<DisorderValue>{
+        int innerValue;
+        int outterValue;
+        List<Point> list;
+
+        public DisorderValue(List<Point> list) {
+            this.list = list;
+            innerValue = innerDisorder(list);
+            outterValue = outterDisorder(list);
+        }
+        @Override
+        public int compareTo(@NonNull DisorderValue o) {
+            if (innerValue + outterValue > o.innerValue + o.outterValue) {
+                return -1;
+            }
+            if (innerValue + outterValue < o.innerValue + o.outterValue){
+                return 1;
+            }
+            return 0;
+        }
+    }
 }

@@ -4,12 +4,12 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -20,10 +20,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.khgame.picturepuzzle.base.SquaredFragment;
 import com.khgame.picturepuzzle.db.operation.DeleteClassicPictureByUuid;
@@ -41,11 +41,6 @@ import com.khgame.picturepuzzle2.R;
 import com.khgame.picturepuzzle2.ui.activity.ClassicGameActivity;
 import com.khgame.picturepuzzle2.ui.view.DisorderImageView;
 import com.khgame.picturepuzzle2.ui.view.ProgressHit;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -56,15 +51,13 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by zkang on 2017/1/7.
  */
 
-@RuntimePermissions
-public class ClassicListFragment extends SquaredFragment {
+public class ClassicListFragment extends SquaredFragment implements EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = "ClassicListFragment";
     private int gameLevel = GameLevel.EASY;
@@ -80,6 +73,9 @@ public class ClassicListFragment extends SquaredFragment {
 
     private static final int REQUEST_TAKE_PHOTO = 100;
     private static final int REQUEST_GET_CONTENT = 103;
+
+    private static final int PERMISSION_TAKE_PHOTO = 201;
+    private static final int PERMISSION_GALLERY = 202;
 
     private static final int RESULT_OK = -1;
 
@@ -163,6 +159,12 @@ public class ClassicListFragment extends SquaredFragment {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
     @OnClick(R.id.fab)
     void onClickFab() {
         switch (gameLevel) {
@@ -179,6 +181,23 @@ public class ClassicListFragment extends SquaredFragment {
         updateFabImage();
         SettingManager.Instance().setInt("ClassicLevel", gameLevel);
         listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.d(TAG, "onPermissionsGranted, requestCode:" + requestCode);
+        if (requestCode == PERMISSION_TAKE_PHOTO) {
+            takePhoto();
+        }
+        if (requestCode == PERMISSION_GALLERY) {
+            selectGallery();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.d(TAG, "onPermissionsDenied, requestCode:" + requestCode);
+        Toast.makeText(getContext(), "Seems do not get your permission", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -314,20 +333,26 @@ public class ClassicListFragment extends SquaredFragment {
 
 
     private void selectGallery() {
+        String perm = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (!EasyPermissions.hasPermissions(getContext(), perm)) {
+            Log.d(TAG, "selectGallery request permission, permission code:" + PERMISSION_GALLERY);
+            EasyPermissions.requestPermissions(this, "Select gallery need your permission", PERMISSION_GALLERY, perm);
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_GET_CONTENT);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-//            startActivityForResult(intent, SELECT_PIC_KITKAT);
-//        } else {
-//            startActivityForResult(intent, IMAGE_REQUEST_CODE);
-//        }
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void takePhoto() {
-
+        String[] perms = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (!EasyPermissions.hasPermissions(getContext(), perms)) {
+            Log.d(TAG, "takePhoto request permission, permission code:" + PERMISSION_GALLERY);
+            EasyPermissions.requestPermissions(this, "Take photo need your permission", PERMISSION_TAKE_PHOTO, perms);
+            return;
+        }
 
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         File outputImage = new File(path, UUID.randomUUID().toString());
