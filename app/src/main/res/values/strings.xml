@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PicturePuzzle2</string>
+    <string name="app_name">Puzzle Me</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_classic_game">ClassicGameActivity</string>
     <string name="title_activity_serial_pictures">SerialPicturesActivity</string>
