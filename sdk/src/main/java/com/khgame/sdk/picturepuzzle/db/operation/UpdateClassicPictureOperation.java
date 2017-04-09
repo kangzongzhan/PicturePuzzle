@@ -10,7 +10,7 @@ import com.khgame.sdk.picturepuzzle.model.SerialPicture;
  * Created by zkang on 2017/2/19.
  */
 
-public class UpdateClassicPictureOperation extends DBOperation<SerialPicture, Void> {
+public class UpdateClassicPictureOperation extends DBOperation<Void, Void> {
     private ClassicPicture classicPicture;
     public UpdateClassicPictureOperation(ClassicPicture classicPicture) {
         this.classicPicture = classicPicture;

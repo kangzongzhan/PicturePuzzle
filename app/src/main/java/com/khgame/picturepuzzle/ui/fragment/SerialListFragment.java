@@ -3,6 +3,7 @@ package com.khgame.picturepuzzle.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,21 +15,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.khgame.sdk.picturepuzzle.base.SquaredFragment;
-import com.khgame.sdk.picturepuzzle.model.BitmapEntry;
+import com.khgame.sdk.picturepuzzle.common.BitmapManager;
+import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.Result;
+import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.serial.SerialInstallEvent;
-import com.khgame.sdk.picturepuzzle.serial.SerialInstallManager;
 import com.khgame.sdk.picturepuzzle.serial.SerialManager;
 import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
-import com.khgame.sdk.picturepuzzle.serial.SerialStateUpdateEvent;
-import com.khgame.sdk.picturepuzzle.serial.SerialsUpdateEvent;
+import com.khgame.sdk.picturepuzzle.serial.SerialsLoadEvent;
 import com.khgame.picturepuzzle.R;
-import com.khgame.picturepuzzle.ui.activity.SerialPicturesActivity;
+import com.khgame.picturepuzzle.ui.activity.SerialPictureListActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,77 +44,92 @@ import butterknife.ButterKnife;
  */
 
 public class SerialListFragment extends SquaredFragment {
-    private static String TAG = "SerialListFragment";
+    private static String COMPONENT = SerialListFragment.class.getSimpleName();
 
     @BindView(R.id.gridview)
     GridView gridView;
-    SerialManager serialManager = SerialManagerImpl.getInstance();
-
     SerialListAdapter listAdapter = new SerialListAdapter();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("LifeCycle", COMPONENT + " - onCreateView");
         return inflater.inflate(R.layout.fragment_serial_list, null);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("LifeCycle", COMPONENT + " - onViewCreated");
         gridView.setAdapter(listAdapter);
-        serialManager.loadSerials();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("LifeCycle", COMPONENT + " - onResume");
+        listAdapter.loadSerials();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @SuppressWarnings("unused") // invoked by event bus
-    public void onEventMainThread(SerialsUpdateEvent event) {
-        listAdapter.notifyDataSetChanged();
-    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("LifeCycle", COMPONENT + " - onPause");
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @SuppressWarnings("unused") // invoked by event bus
-    public void onEventMainThread(SerialInstallEvent event) {
-        switch (event.type) {
-            case END:
-                listAdapter.notifyDataSetChanged();
-                break;
-        }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(SerialStateUpdateEvent event) {
-        SerialListAdapter.ViewHolder viewHolder = getViewHolder(event.serial);
-        if (viewHolder != null) {
-            viewHolder.setSerial(event.serial);
-        }
-    }
-
-    private SerialListAdapter.ViewHolder getViewHolder(Serial serial) {
-        int count = gridView.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View view = gridView.getChildAt(i);
-            SerialListAdapter.ViewHolder holder = (SerialListAdapter.ViewHolder) view.getTag();
-            if (serial.equals(holder.getSerial())) {
-                return holder;
-            }
-        }
-        return null;
-    }
-
-
 
     class SerialListAdapter extends BaseAdapter {
+        SerialManager serialManager = SerialManagerImpl.getInstance();
+        BitmapManager bitmapManager = BitmapManagerImpl.getInstance();
+
+        private List<Serial> serials = new ArrayList<>();
+
+        public SerialListAdapter() {
+            EventBus.getDefault().register(this);
+        }
+        public void loadSerials() {
+            serialManager.loadSerials();
+        }
+        @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+        public void onEventMainThread(SerialsLoadEvent event) {
+            if (event.result == Result.Success) {
+                serials = event.serials;
+                this.notifyDataSetChanged();
+            }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+        public void onEventMainThread(SerialInstallEvent event) {
+            Serial serial = getSerialByUuid(event.serial.uuid);
+            switch (event.type) {
+                case BEGIN:
+                    Log.d("InstallSerial", "BEGIN - SerialName:" + event.serial.name);
+                    serial.installState = Serial.State.INSTALLING;
+                    serial.installProgress = 0;
+                    break;
+                case END:
+                    Log.d("InstallSerial", "END - SerialName:" + event.serial.name);
+                    serial.installState = Serial.State.INSTALLED;
+                    serial.installProgress = 100;
+                    break;
+                case INSTALLING:
+                    Log.d("InstallSerial", "INSTALLING - SerialName:" + event.serial.name + ", Progress:" + event.progress);
+                    serial.installState = Serial.State.INSTALLING;
+                    serial.installProgress = event.progress;
+                    break;
+            }
+            this.notifyDataSetChanged();
+        }
+
         @Override
         public int getCount() {
-            return serialManager.getSerials().size();
+            return serials.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return serialManager.getSerials().get(i);
+            return serials.get(i);
         }
 
         @Override
@@ -140,18 +161,13 @@ public class SerialListFragment extends SquaredFragment {
                 view.setTag(this);
                 view.setOnClickListener(this);
                 ButterKnife.bind(this, view);
+                bus.register(this);
                 cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 cover.setLayoutParams(getLayoutParams());
             }
             public void setSerial(Serial serial) {
                 this.serial = serial;
-                new LoadPictureOperation(serial.uuid, serial.networkCoverPath)
-                        .callback(new Operation.Callback<BitmapEntry, Void>() {
-                            @Override
-                            public void onSuccessMainThread(BitmapEntry bitmapEntry) {
-                                cover.setImageBitmap(bitmapEntry.bitmap);
-                            }
-                        }).enqueue();
+                bitmapManager.loadBitmapByUuid(serial.uuid);
 
                 if (serial.installState == Serial.State.UNINSTALL) {
                     cover.setAlpha(0.5f);
@@ -172,14 +188,16 @@ public class SerialListFragment extends SquaredFragment {
             public void onClick(View v) {
                 if(serial.installState == Serial.State.UNINSTALL) {
                     Log.d("kzz", "开始安装");
-                    SerialInstallManager.getInstance().install(serial);
+                    serialManager.install(serial);
                 }
 
                 if(serial.installState == Serial.State.INSTALLED) {
                     Log.d("kzz", "已经安装");
                     Intent intent = new Intent();
-                    intent.setClass(getContext(), SerialPicturesActivity.class);
-                    intent.putExtra("uuid", serial.uuid);
+                    intent.setClass(getContext(), SerialPictureListActivity.class);
+                    intent.putExtra(SerialPictureListActivity.SERIAL_UUID, serial.uuid);
+                    intent.putExtra(SerialPictureListActivity.SERIAL_PRIMARY_COLOR, serial.primaryColor);
+                    intent.putExtra(SerialPictureListActivity.SERIAL_SECONDARY_COLOR, serial.secondaryColor);
                     startActivity(intent);
                 }
 
@@ -188,8 +206,11 @@ public class SerialListFragment extends SquaredFragment {
                 }
             }
 
-            public Serial getSerial() {
-                return serial;
+            @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+            public void onEventMainThread(BitmapLoadEvent event) {
+                if (event.result == Result.Success && TextUtils.equals(event.uuid, serial.uuid)) {
+                    cover.setImageBitmap(event.bitmap);
+                }
             }
         }
 
@@ -200,6 +221,15 @@ public class SerialListFragment extends SquaredFragment {
             int imageW = displayWidth / 3;
             int imageH = imageW * 4 / 3;
             return new LinearLayout.LayoutParams(imageW, imageH);
+        }
+
+        private Serial getSerialByUuid(String uuid) {
+            for(Serial serial:serials) {
+                if(serial.uuid.equals(uuid)) {
+                    return serial;
+                }
+            }
+            return null;
         }
     }
 }

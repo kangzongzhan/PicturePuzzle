@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.khgame.picturepuzzle2", appContext.getPackageName());
+        assertEquals("com.khgame.picturepuzzle", appContext.getPackageName());
     }
 }

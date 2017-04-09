@@ -1,7 +1,10 @@
 package com.khgame.sdk.picturepuzzle.core;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import com.khgame.sdk.picturepuzzle.common.Constant;
+import com.khgame.sdk.picturepuzzle.common.Probability;
+import com.khgame.sdk.picturepuzzle.common.SettingManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +20,7 @@ import static com.khgame.sdk.picturepuzzle.core.GameLevel.yNums;
 
 public class DisorderUtil {
     private static final String TAG = "DisorderUtil";
+    private static SettingManager settings = SettingManager.Instance();
     public static String encode(List<Point> list) {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
@@ -49,141 +53,131 @@ public class DisorderUtil {
     }
 
     public static List<Point> newDisorderList(int gameLevel) {
-
-        // #1 新建list
-        int xNums = xNums(gameLevel);
-        int yNums = yNums(gameLevel);
-        List<Point> list = new ArrayList();
-        for(int y = 0; y < yNums; y++) {
-            for(int x = 0; x < xNums; x++) {
-                Point p = new Point();
-                p.x = x;
-                p.y = y;
-                list.add(p);
-            }
+        String disorderBase = null;
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                disorderBase = settings.getString(Constant.EASY_TEMPLATE_KEY, Constant.EASY_TEMPLATE_DEFAULT);
+                break;
+            case GameLevel.MEDIUM:
+                disorderBase = settings.getString(Constant.MEDIUM_TEMPLATE_KEY, Constant.MEDIUM_TEMPLATE_DEFAULT);
+                break;
+            case GameLevel.HARD:
+                disorderBase = settings.getString(Constant.HARD_TEMPLATE_KEY, Constant.HARD_TEMPLATE_DEFAULT);
         }
-        Point whitePoint = new Point();
-        whitePoint.x = 0;
-        whitePoint.y = yNums;
-        list.add(whitePoint);
 
-        // #2 打乱list
-        outter:
-        while(true) {
-            Log.d(TAG, "disordering...gameLevel:" + gameLevel + ", innerDisorder:" + innerDisorder(list) + ", outterDisorder:" + outterDisorder(list));
-            List<Point> listAfterUp = swipUp(list);
-            List<Point> listAfterDown = swipDown(list);
-            List<Point> listAfterRight = swipRight(list);
-            List<Point> listAfterLeft = swipLeft(list);
-            list = chooseList(listAfterUp, listAfterRight, listAfterDown, listAfterLeft);
 
-            switch (gameLevel) {
-                case GameLevel.EASY:
-                    if (innerDisorder(list) + outterDisorder(list) > 50) {
-                        break outter;
-                    }
-                    break;
-                case GameLevel.MEDIUM:
-                    if (innerDisorder(list) + outterDisorder(list) > 170) {
-                        break outter;
-                    }
-                    break;
-                case GameLevel.HARD:
-                    if (innerDisorder(list) + outterDisorder(list) > 450) {
-                        break outter;
-                    }
-                    break;
-            }
+        final List<Point> list = randomStep(disorderBase, 1000);
+
+        // set disorder base, be used for next disorder
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                settings.setString(Constant.EASY_TEMPLATE_KEY, encode(list));
+                break;
+            case GameLevel.MEDIUM:
+                settings.setString(Constant.MEDIUM_TEMPLATE_KEY, encode(list));
+                break;
+            case GameLevel.HARD:
+                settings.setString(Constant.HARD_TEMPLATE_KEY, encode(list));
         }
+
         return list;
     }
 
-    public static List<Point> swipUp(final List<Point> list) {
+    public static List<Point> randomStep(String seed, int steps) {
+        List<Point> seedList = decode(seed);
+        return randomStep(seedList, steps);
+    }
+
+    public static List<Point> randomStep(List<Point> seed, int steps) {
+        Probability probability = new Probability();
+        probability.with(25, () -> swipUp(seed))
+                .with(25, () -> swipDown(seed))
+                .with(25, () -> swipLeft(seed))
+                .with(25, () -> swipRight(seed));
+        for(int i = 0; i < steps; i++) {
+            probability.go();
+        }
+        return seed;
+    }
+
+    public static boolean swipUp(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
-        List<Point> copyList = cloneList(list);
-
-        int whiteIndex = locateWhitePoint(copyList);
+        int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex + xNums;
 
         if(targetIndex > list.size() - 1 || !valideIndex(list, targetIndex)) { //不可上划
-            return copyList;
+            return false;
         }
 
-        Point whitePoint = copyList.get(whiteIndex);
-        Point targetPoint = copyList.remove(targetIndex);
-        copyList.add(targetIndex, whitePoint);
-        copyList.remove(whiteIndex);
-        copyList.add(whiteIndex, targetPoint);
+        Point whitePoint = list.get(whiteIndex);
+        Point targetPoint = list.remove(targetIndex);
+        list.add(targetIndex, whitePoint);
+        list.remove(whiteIndex);
+        list.add(whiteIndex, targetPoint);
 
-        return copyList;
+        return true;
     }
 
-    public static List<Point> swipDown(final List<Point> list) {
+    public static boolean swipDown(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
-        List<Point> copyList = cloneList(list);
-
-        int whiteIndex = locateWhitePoint(copyList);
+        int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex - xNums;
 
         if(targetIndex < 0 || !valideIndex(list, targetIndex)) { //不可下划
-            return copyList;
+            return false;
         }
 
-        Point whitePoint = copyList.get(whiteIndex);
-        Point targetPoint = copyList.remove(targetIndex);
-        copyList.add(targetIndex, whitePoint);
-        copyList.remove(whiteIndex);
-        copyList.add(whiteIndex, targetPoint);
+        Point whitePoint = list.get(whiteIndex);
+        Point targetPoint = list.remove(targetIndex);
+        list.add(targetIndex, whitePoint);
+        list.remove(whiteIndex);
+        list.add(whiteIndex, targetPoint);
 
-        return copyList;
+        return true;
     }
 
-    public static List<Point> swipLeft(final List<Point> list) {
+    public static boolean swipLeft(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
-        List<Point> copyList = cloneList(list);
-
-        int whiteIndex = locateWhitePoint(copyList);
+        int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex + 1;
 
         if(targetIndex % xNums == 0 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可左划
-            return copyList;
+            return false;
         }
 
-        Point whitePoint = copyList.get(whiteIndex);
-        Point targetPoint = copyList.remove(targetIndex);
-        copyList.add(targetIndex, whitePoint);
-        copyList.remove(whiteIndex);
-        copyList.add(whiteIndex, targetPoint);
+        Point whitePoint = list.get(whiteIndex);
+        Point targetPoint = list.remove(targetIndex);
+        list.add(targetIndex, whitePoint);
+        list.remove(whiteIndex);
+        list.add(whiteIndex, targetPoint);
 
-        return copyList;
+        return true;
     }
 
-    public static List<Point> swipRight(final List<Point> list) {
+    public static boolean swipRight(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
-        List<Point> copyList = cloneList(list);
-
-        int whiteIndex = locateWhitePoint(copyList);
+        int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex - 1;
 
         if(targetIndex % xNums == xNums -1 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可右划
-            return copyList;
+            return false;
         }
 
-        Point whitePoint = copyList.get(whiteIndex);
-        Point targetPoint = copyList.remove(targetIndex);
-        copyList.add(targetIndex, whitePoint);
-        copyList.remove(whiteIndex);
-        copyList.add(whiteIndex, targetPoint);
+        Point whitePoint = list.get(whiteIndex);
+        Point targetPoint = list.remove(targetIndex);
+        list.add(targetIndex, whitePoint);
+        list.remove(whiteIndex);
+        list.add(whiteIndex, targetPoint);
 
-        return copyList;
+        return true;
     }
 
     private static int locateWhitePoint(final List<Point> list) {
@@ -261,38 +255,27 @@ public class DisorderUtil {
         int value = Math.abs(last.x - upOfLast.x) + Math.abs(last.y - upOfLast.y);
         sum += value;
 
-        return sum/2;
+        return sum;
     }
 
     /**
-     * 按照 40% 30% 20% 10%的概率选择
+     * 按照 50% 30% 15% 5%的概率选择
      */
     private static List<Point> chooseList(List<Point> up, List<Point> right, List<Point> down, List<Point> left) {
-        List<DisorderValue> disorderValues = new ArrayList<>();
+        final List<DisorderValue> disorderValues = new ArrayList<>();
         disorderValues.add(new DisorderValue(up));
         disorderValues.add(new DisorderValue(right));
         disorderValues.add(new DisorderValue(down));
         disorderValues.add(new DisorderValue(left));
         Collections.sort(disorderValues);
-
-        int random = (int) (Math.random() * 10);
-        switch(random) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                return disorderValues.get(0).list;
-            case 4:
-            case 5:
-            case 6:
-                return disorderValues.get(1).list;
-            case 7:
-            case 8:
-                return disorderValues.get(2).list;
-            case 9:
-                return disorderValues.get(3).list;
-        }
-        return up;
+        final List<Point>[] result = new ArrayList[1];
+        Probability probability = new Probability();
+        probability.with(50, () -> result[0] = disorderValues.get(0).list)
+        .with(30, () -> result[0] = disorderValues.get(0).list)
+        .with(15, () -> result[0] = disorderValues.get(0).list)
+        .with(5, () -> result[0] = disorderValues.get(0).list);
+        probability.go();
+        return result[0];
     }
 
     private static boolean valideIndex(List<Point> list, int index) {

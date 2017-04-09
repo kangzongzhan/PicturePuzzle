@@ -15,47 +15,16 @@ public interface SerialManager {
     /**
      * load all serial from db and network
      */
-    public void loadSerials();
-
-
-    /**
-     * get all serials
-     */
-    public List<Serial> getSerials();
+    void loadSerials();
 
     /**
-     * get serial by uuid
+     *
      */
-    public Serial getSerialByUuid(String uuid);
+    void install(Serial serial);
 
     /**
-     * when select a serial and going to start game
+     * get serial by serial uuid
      */
-    public void startSerial(Serial serial);
+    void getSerialBySerialUuid(String serialUuid);
 
-    /**
-     * get the serial, maybe null if never select a serial to start
-     */
-    public Serial getCurrentSerial();
-
-    /**
-     * update current serial
-     */
-
-    public void updateCurrentSerial();
-
-    /**
-     * get current serial picture list
-     */
-    public List<SerialPicture> getCurrentSerialPictureList();
-
-    /**
-     * should be invoked when exit the serial
-     */
-    public void endSerial();
-
-    /**
-     * load all serial pictures by serial uuid from db
-     */
-    public void loadSerialPicturesBySerialUuid(String uuid);
 }

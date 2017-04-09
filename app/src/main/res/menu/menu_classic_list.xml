@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.khgame.picturepuzzle2.ui.activity.MainActivity">
+    tools:context="com.khgame.picturepuzzle.ui.activity.MainActivity">
     <item android:id="@+id/action_take_photo"
         android:orderInCategory="101"
         android:title="拍照"

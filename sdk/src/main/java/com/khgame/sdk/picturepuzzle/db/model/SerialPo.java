@@ -8,7 +8,6 @@ public class SerialPo {
     public String uuid;
     public String name;
     public int gameLevel;
-    public String localCoverPath;
-    public String networkCoverPath;
-    public String themeColor;
+    public int primaryColor;
+    public int secondaryColor;
 }

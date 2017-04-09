@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
-import com.khgame.sdk.picturepuzzle.classic.ClassicManager;
-import com.khgame.sdk.picturepuzzle.classic.ClassicManagerImpl;
+import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManager;
+import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
 import com.khgame.sdk.picturepuzzle.classic.InitClassicPictureFinishEvent;
 import com.khgame.sdk.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.R;
@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class SplashActivity extends SquaredActivity {
 
-    private ClassicManager classicManager = ClassicManagerImpl.getInstance();
+    private ClassicPictureManager classicManager = ClassicPictureManagerImpl.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

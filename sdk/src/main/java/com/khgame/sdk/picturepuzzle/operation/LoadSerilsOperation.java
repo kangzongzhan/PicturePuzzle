@@ -1,10 +1,12 @@
 package com.khgame.sdk.picturepuzzle.operation;
 
+import android.graphics.Color;
+
 import com.khgame.sdk.picturepuzzle.db.model.SerialPo;
-import com.khgame.sdk.picturepuzzle.db.operation.QueryAllSerialOperation;
+import com.khgame.sdk.picturepuzzle.db.operation.QueryAllSerialsOperation;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.service.model.SerialDto;
-import com.khgame.sdk.picturepuzzle.service.operation.GetAllSerialsOperation;
+import com.khgame.sdk.picturepuzzle.service.operation.GetAllSerialsFromServiceOperation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
     @Override
     protected void doWork() {
 
-        new QueryAllSerialOperation().callback(new Callback<List<SerialPo>, Void>() {
+        new QueryAllSerialsOperation().callback(new Callback<List<SerialPo>, Void>() {
             @Override
             public void onSuccess(List<SerialPo> serialPos) {
                 LoadSerilsOperation.this.listPos = serialPos;
@@ -31,7 +33,7 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
             }
         }).enqueue();
 
-        new GetAllSerialsOperation().callback(new Callback<List<SerialDto>, Void>() {
+        new GetAllSerialsFromServiceOperation().callback(new Callback<List<SerialDto>, Void>() {
             @Override
             public void onSuccess(List<SerialDto> serialDtos) {
                 LoadSerilsOperation.this.listDtos = serialDtos;
@@ -47,7 +49,8 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
             serial.uuid = serialPo.uuid;
             serial.name = serialPo.name;
             serial.gameLevel = serialPo.gameLevel;
-            serial.networkCoverPath = serialPo.networkCoverPath;
+            serial.primaryColor = serialPo.primaryColor;
+            serial.secondaryColor = serialPo.secondaryColor;
             serial.installState = Serial.State.INSTALLED;
             list.add(serial);
         }
@@ -59,7 +62,8 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
             Serial serial = new Serial();
             serial.uuid = serialDto.uuid;
             serial.name = serialDto.name;
-            serial.networkCoverPath = serialDto.coverUrl;
+            serial.primaryColor = Color.parseColor(serialDto.primaryColor);
+            serial.secondaryColor = Color.parseColor(serialDto.secondaryColor);
             serial.installState = Serial.State.UNINSTALL;
             list.add(serial);
         }

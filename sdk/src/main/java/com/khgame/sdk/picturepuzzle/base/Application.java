@@ -76,7 +76,7 @@ public abstract class Application extends MultiDexApplication {
                 .imageDownloader(new BaseImageDownloader(this)) // default
                 .imageDecoder(new BaseImageDecoder(false)) // default
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
-                .writeDebugLogs()
+//                .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
     }

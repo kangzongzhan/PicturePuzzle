@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle2;
+package com.khgame.picturepuzzle;
 
 import org.junit.Test;
 

@@ -7,6 +7,6 @@ package com.khgame.sdk.picturepuzzle.service.model;
 public class SerialDto {
     public String uuid;
     public String name;
-    public String coverUrl;
-    public String themeColor;
+    public String primaryColor;
+    public String secondaryColor;
 }

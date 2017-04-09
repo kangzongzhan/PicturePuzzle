@@ -1,5 +1,7 @@
 package com.khgame.sdk.picturepuzzle.serial;
 
+import com.khgame.sdk.picturepuzzle.model.Serial;
+
 /**
  * Created by zkang on 2017/2/26.
  */
@@ -7,12 +9,9 @@ package com.khgame.sdk.picturepuzzle.serial;
 public class SerialInstallEvent {
 
     public EventType type;
-    public int value;
+    public Serial serial;
+    public int progress;
 
-    public SerialInstallEvent(EventType type, int value) {
-        this.type = type;
-        this.value = value;
-    }
     public SerialInstallEvent(EventType type) {
         this.type = type;
     }

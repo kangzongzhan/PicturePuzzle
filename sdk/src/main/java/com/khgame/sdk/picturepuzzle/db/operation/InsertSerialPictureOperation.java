@@ -3,6 +3,7 @@ package com.khgame.sdk.picturepuzzle.db.operation;
 import android.content.ContentValues;
 
 import com.khgame.sdk.picturepuzzle.db.table.SerialPictureTable;
+import com.khgame.sdk.picturepuzzle.db.table.SerialTable;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
 import com.khgame.sdk.picturepuzzle.service.model.SerialPictureDto;
 
@@ -43,7 +44,6 @@ public class InsertSerialPictureOperation extends DBOperation<SerialPicture, Voi
         serialPicture.uuid = serialPictureDto.uuid;
         serialPicture.name = serialPictureDto.name;
         serialPicture.serialUuid = serialUuid;
-        serialPicture.networkPath = serialPictureDto.url;
         serialPicture.easyData = serialPictureDto.easyData;
         serialPicture.mediumData = serialPictureDto.mediumData;
         serialPicture.hardData = serialPictureDto.hardData;

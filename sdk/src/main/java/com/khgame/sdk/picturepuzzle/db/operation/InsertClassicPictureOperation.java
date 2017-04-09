@@ -21,24 +21,20 @@ public class InsertClassicPictureOperation extends DBOperation<ClassicPicture, V
 
     @Override
     protected void doWork() {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(Cols.UUID, picture.uuid);
-            values.put(Cols.NETWORKPATH, picture.networkPath);
-            values.put(Cols.EASYDATA, picture.easyData);
-            values.put(Cols.MEDIUMDATA, picture.mediumData);
-            values.put(Cols.HARDDATA, picture.hardData);
+        ContentValues values = new ContentValues();
+        values.put(Cols.UUID, picture.uuid);
+        values.put(Cols.EASYDATA, picture.easyData);
+        values.put(Cols.MEDIUMDATA, picture.mediumData);
+        values.put(Cols.HARDDATA, picture.hardData);
 
-            long id = db.insert(ClassicPictureTable.NAME, null, values);
+        long id = db.insert(ClassicPictureTable.NAME, null, values);
 
-            if(id == -1) {
-                postFailure(null);
-            } else {
-                postSuccess(picture);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "insert failure", e);
+        if(id == -1) {
             postFailure(null);
+            Log.e(TAG, "insert classic picture failure");
+        } else {
+            postSuccess(picture);
+            Log.i(TAG, "insert classic success");
         }
     }
 }

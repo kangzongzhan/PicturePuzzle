@@ -46,7 +46,6 @@ public class CopyUriPicture extends Operation<ClassicPicture, Void> {
         classicPicture.easyData = DisorderUtil.newDisorderString(GameLevel.EASY);
         classicPicture.mediumData = DisorderUtil.newDisorderString(GameLevel.MEDIUM);
         classicPicture.hardData = DisorderUtil.newDisorderString(GameLevel.HARD);
-        classicPicture.networkPath = "";
         return classicPicture;
     }
 

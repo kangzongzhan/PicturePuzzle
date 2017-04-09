@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.khgame.picturepuzzle2.ui.activity.ClassicGameActivity"
+    tools:context="com.khgame.picturepuzzle.ui.activity.ClassicGameActivity"
     tools:showIn="@layout/activity_classic_game">
-    <com.khgame.picturepuzzle2.ui.view.GameView
+    <com.khgame.picturepuzzle.ui.view.GameView
         android:id="@+id/gameview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.khgame.picturepuzzle2.ui.view.GameView>
+    </com.khgame.picturepuzzle.ui.view.GameView>
 </RelativeLayout>

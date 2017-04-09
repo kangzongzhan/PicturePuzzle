@@ -24,8 +24,8 @@ public class InsertSerialOperation extends DBOperation<Serial, Void> {
         contentValues.put(SerialTable.Cols.UUID, serial.uuid);
         contentValues.put(SerialTable.Cols.NAME, serial.name);
         contentValues.put(SerialTable.Cols.GAMELEVEL, GameLevel.EASY); // default EASY
-        contentValues.put(SerialTable.Cols.NETWORKCOVERPATH, serial.networkCoverPath);
-        contentValues.put(SerialTable.Cols.THEMECOLOR, serial.themeColor);
+        contentValues.put(SerialTable.Cols.PRIMARYCOLOR, serial.primaryColor);
+        contentValues.put(SerialTable.Cols.SECONDARYCOLOR, serial.secondaryColor);
         long id = db.insert(SerialTable.NAME, null, contentValues);
         if (id == -1) {
             postFailure(null);

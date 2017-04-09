@@ -14,8 +14,8 @@ public class SerialTable {
         public static final String NAME = "name"; // Text
         public static final String VERSION = "version"; // Integer
         public static final String GAMELEVEL = "game_level"; // Integer
-        public static final String NETWORKCOVERPATH = "network_cover_path"; // Integer
-        public static final String THEMECOLOR = "theme_color"; // Text
+        public static final String PRIMARYCOLOR = "primary_color"; // Integer
+        public static final String SECONDARYCOLOR = "secondary_color"; // Integer
     }
 
     public static final String CREATESQL = "create table " + NAME + "( " +
@@ -24,7 +24,7 @@ public class SerialTable {
             Cols.NAME + " text, " +
             Cols.VERSION + " integer, " +
             Cols.GAMELEVEL + " text, " +
-            Cols.NETWORKCOVERPATH + " text, " +
-            Cols.THEMECOLOR + " text" +
+            Cols.PRIMARYCOLOR + " integer, " +
+            Cols.SECONDARYCOLOR + " integer" +
             ")";
 }

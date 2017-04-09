@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'checkstyle'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
     defaultConfig {
-        applicationId "com.khgame.picturepuzzle2"
+        applicationId "com.khgame.picturepuzzle"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
@@ -20,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -32,7 +37,10 @@ dependencies {
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.google.android.gms:play-services:10.2.0'
-    compile 'com.yalantis:ucrop:2.2.0'
+    compile ('com.yalantis:ucrop:2.2.0')
+            {
+                exclude  group:'com.squareup.okhttp3'
+            }
     compile 'pub.devrel:easypermissions:0.3.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

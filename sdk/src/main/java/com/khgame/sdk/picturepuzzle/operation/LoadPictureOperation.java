@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.khgame.sdk.picturepuzzle.base.Application;
-import com.khgame.sdk.picturepuzzle.model.BitmapEntry;
+import com.khgame.sdk.picturepuzzle.common.Constant;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.IoUtils;
 
@@ -16,14 +16,12 @@ import java.io.FileOutputStream;
  * Created by zkang on 2017/2/25.
  */
 
-public class LoadPictureOperation extends Operation<BitmapEntry, Void> {
+public class LoadPictureOperation extends Operation<Bitmap, Void> {
 
     private String uuid;
-    private String url;
 
-    public LoadPictureOperation(String uuid, String url) {
+    public LoadPictureOperation(String uuid) {
         this.uuid = uuid;
-        this.url = url;
     }
 
     @Override
@@ -34,24 +32,18 @@ public class LoadPictureOperation extends Operation<BitmapEntry, Void> {
         if(localFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
             if(bitmap != null) {
-                BitmapEntry entry = new BitmapEntry();
-                entry.uuid = uuid;
-                entry.bitmap = bitmap;
-                postSuccess(entry);
+                postSuccess(bitmap);
                 return;
             }
         }
 
         // load bitmap from network
+        String url = Constant.PICTURE_URL_BASE + uuid;
         Bitmap bitmap = ImageLoader.getInstance().loadImageSync(url);
         if(bitmap == null) {
             postFailure(null);
         }
-        BitmapEntry entry = new BitmapEntry();
-        entry.uuid = uuid;
-        entry.bitmap = bitmap;
-        postSuccess(entry);
-        postSuccess(entry);
+        postSuccess(bitmap);
 
         FileOutputStream fileOutputStream = null;
         try {

@@ -1,28 +1,36 @@
 package com.khgame.picturepuzzle.ui.activity;
 
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
+import com.khgame.sdk.picturepuzzle.common.BitmapManager;
+import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.Result;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.GameLevel;
 import com.khgame.sdk.picturepuzzle.core.Point;
-import com.khgame.sdk.picturepuzzle.db.operation.UpdateSerialPictureOperation;
-import com.khgame.sdk.picturepuzzle.model.BitmapEntry;
+import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
-import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
-import com.khgame.sdk.picturepuzzle.operation.Operation;
-import com.khgame.sdk.picturepuzzle.serial.SerialManager;
-import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.ui.view.GameView;
+import com.khgame.sdk.picturepuzzle.serial.SerialPictureLoadEvent;
+import com.khgame.sdk.picturepuzzle.serial.SerialPictureManager;
+import com.khgame.sdk.picturepuzzle.serial.SerialPictureManagerImpl;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Kisha Deng on 2/28/2017.
@@ -30,49 +38,111 @@ import butterknife.ButterKnife;
 
 public class SerialGameActivity extends SquaredActivity {
 
+    public static final String SRIALPICTURE_UUID = "SERIALPICTURE_UUID";
+    public static final String SRIALPICTURE_PRIMARY_COLOR = "SERIALPICTURE_PRIMARY_COLOR";
+    public static final String SRIALPICTURE_SECONDARY_COLOR = "SERIALPICTURE_SECONDARY_COLOR";
+
+    public static final String GAME_LEVEL = "GAME_LEVEL";
+
+    private SerialPictureManager serialPictureManager = SerialPictureManagerImpl.getInstance();
+    private BitmapManager bitmapManager = BitmapManagerImpl.getInstance();
+
     private String uuid;
     private int gameLevel;
-    private SerialPicture serialPicture;
-    private Bitmap bitmap;
+    private int primaryColor;
+    private int secondaryColor;
 
-    private SerialManager serialManager = SerialManagerImpl.getInstance();
+    private Bitmap bitmap;
+    private SerialPicture serialPicture;
 
     @BindView(R.id.gameview)
     GameView gameView;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uuid = getIntent().getStringExtra("uuid");
         setContentView(R.layout.activity_classic_game);
         ButterKnife.bind(this);
-        gameView.setGameOverListener(gameOverListener);
-        gameLevel = serialManager.getCurrentSerial().gameLevel;
-        serialPicture = getSerialPictureByUuid(uuid);
+
+        uuid = getIntent().getStringExtra(SerialGameActivity.SRIALPICTURE_UUID);
+        gameLevel = getIntent().getIntExtra(SerialGameActivity.GAME_LEVEL, GameLevel.EASY);
+        primaryColor = getIntent().getIntExtra(SerialGameActivity.SRIALPICTURE_PRIMARY_COLOR, getResources().getColor(R.color.colorPrimary));
+        secondaryColor = getIntent().getIntExtra(SerialGameActivity.SRIALPICTURE_SECONDARY_COLOR, getResources().getColor(R.color.colorAccent));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initGameData();
+        updateTheme(primaryColor, secondaryColor);
+        updateFabImage();
+        gameView.setGameListener(gameListener);
+
+        serialPictureManager.getSerialPictureByUuid(uuid);
+        bitmapManager.loadBitmapByUuid(uuid);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tryToStartGame();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(gameView.isStarted()) {
-            List<Point> gameData = gameView.getGameData();
-            new UpdateSerialPictureOperation(serialPicture, gameData).enqueue();
+        updateSerialPicture();
+    }
+
+    @OnClick(R.id.fab)
+    void onClickFab() {
+        updateSerialPicture();
+        gameView.end();
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                gameLevel = GameLevel.MEDIUM;
+                break;
+            case GameLevel.MEDIUM:
+                gameLevel = GameLevel.HARD;
+                break;
+            case GameLevel.HARD:
+                gameLevel = GameLevel.EASY;
+                break;
+        }
+        updateFabImage();
+        tryToStartGame();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+    public void onEventMainThread(SerialPictureLoadEvent event) {
+        if (event.result == Result.Success && event.serialPicture.uuid.equals(uuid)) {
+            this.serialPicture = event.serialPicture;
+            tryToStartGame();
         }
     }
 
-    private void initGameData() {
+    @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+    public void onEventMainThread(BitmapLoadEvent event) {
+        if (event.result == Result.Success && event.uuid.equals(uuid)) {
+            this.bitmap = event.bitmap;
+            tryToStartGame();
+        }
+    }
 
-        new LoadPictureOperation(serialPicture.uuid, serialPicture.networkPath).callback(new Operation.Callback<BitmapEntry, Void>() {
-            @Override
-            public void onSuccessMainThread(BitmapEntry bitmapEntry) {
-                super.onSuccessMainThread(bitmapEntry);
-                bitmap = bitmapEntry.bitmap;
-                startGame();
-            }
-        }).enqueue();
+
+    private void tryToStartGame() {
+        if (!hasResumed()) {
+            return;
+        }
+        if (gameView.isStarted()) {
+            return;
+        }
+        if (bitmap == null || bitmap.isRecycled()) {
+            return;
+        }
+        if (serialPicture == null) {
+            return;
+        }
+        startGame();
     }
 
     private void startGame() {
@@ -91,25 +161,60 @@ public class SerialGameActivity extends SquaredActivity {
         gameView.start(gameData, bitmap);
     }
 
-    private GameView.GameOverListener gameOverListener = new GameView.GameOverListener() {
+    private GameView.GameListener gameListener = new GameView.GameListener() {
+        @Override
+        public void onGameStart() {
+
+        }
+
         @Override
         public void onGameOver() {
-            List<Point> gameData = gameView.getGameData();
-            new UpdateSerialPictureOperation(serialPicture
-                    , gameData).enqueue();
-            Snackbar.make(gameView, "Game Over", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            updateSerialPicture();
+            Snackbar.make(gameView, "Game Over", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+
+        @Override
+        public void onGameEnd() {
+            updateSerialPicture();
         }
     };
 
-
-    private SerialPicture getSerialPictureByUuid(String uuid) {
-        List<SerialPicture> serialPictures = serialManager.getCurrentSerialPictureList();
-        for(SerialPicture serialPicture:serialPictures) {
-            if(serialPicture.uuid.equals(uuid)) {
-                return serialPicture;
+    private void updateSerialPicture() {
+        if(gameView.isStarted()) {
+            List<Point> gameData = gameView.getGameData();
+            switch (GameLevel.getLevel(gameData)) {
+                case GameLevel.EASY:
+                    serialPicture.easyData = DisorderUtil.encode(gameData);
+                    break;
+                case GameLevel.MEDIUM:
+                    serialPicture.mediumData = DisorderUtil.encode(gameData);
+                    break;
+                case GameLevel.HARD:
+                    serialPicture.hardData = DisorderUtil.encode(gameData);
+                    break;
             }
+            serialPictureManager.updateSerialPicture(serialPicture);
         }
-        return null;
     }
+
+    private void updateTheme(int primaryColor, int secondaryColor) {
+        setWindowStatusBarColor(primaryColor);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
+        fab.setBackgroundTintList(ColorStateList.valueOf(secondaryColor));
+    }
+
+    private void updateFabImage() {
+        switch (gameLevel) {
+            case GameLevel.EASY:
+                fab.setImageResource(R.drawable.ic_one);
+                break;
+            case GameLevel.MEDIUM:
+                fab.setImageResource(R.drawable.ic_two);
+                break;
+            case GameLevel.HARD:
+                fab.setImageResource(R.drawable.ic_three);
+                break;
+        }
+    }
+
 }

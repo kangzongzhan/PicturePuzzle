@@ -1,5 +1,6 @@
 package com.khgame.sdk.picturepuzzle.model;
 
+
 /**
  * Created by zkang on 2017/2/24.
  */
@@ -10,8 +11,8 @@ public class Serial implements Comparable<Serial>{
     public State installState;
     public int installProgress;
     public int gameLevel;
-    public String networkCoverPath;
-    public String themeColor;
+    public int primaryColor;
+    public int secondaryColor;
 
     @Override
     public int compareTo(Serial serial) {

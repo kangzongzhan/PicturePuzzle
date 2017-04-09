@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,8 +28,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.khgame.sdk.picturepuzzle.base.SquaredFragment;
+import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManager;
+import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.BitmapManager;
+import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.Result;
+import com.khgame.sdk.picturepuzzle.db.model.ClassicPicturePo;
 import com.khgame.sdk.picturepuzzle.db.operation.DeleteClassicPictureByUuid;
-import com.khgame.sdk.picturepuzzle.model.BitmapEntry;
+import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
+import com.khgame.sdk.picturepuzzle.events.ClassicPicturesLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
 import com.khgame.sdk.picturepuzzle.operation.CopyUriPicture;
 import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
@@ -42,6 +51,9 @@ import com.khgame.picturepuzzle.ui.activity.ClassicGameActivity;
 import com.khgame.picturepuzzle.ui.view.DisorderImageView;
 import com.khgame.picturepuzzle.ui.view.ProgressHit;
 import com.yalantis.ucrop.UCrop;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,7 +106,7 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         gridView.setAdapter(listAdapter);
         updateFabImage();
     }
@@ -144,8 +156,8 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
                     listAdapter.loadData();
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), ClassicGameActivity.class);
-                    intent.putExtra("GameLevel", gameLevel);
-                    intent.putExtra("uuid", classicPicture.uuid);
+                    intent.putExtra(ClassicGameActivity.GAME_LEVEL, gameLevel);
+                    intent.putExtra(ClassicGameActivity.CLASSICPICTURE_UUID, classicPicture.uuid);
                     startActivity(intent);
                 }
 
@@ -204,16 +216,27 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
      * classic list view adapter
      */
     class ClassicListAdapter extends BaseAdapter  {
+        ClassicPictureManager classicPictureManager = ClassicPictureManagerImpl.getInstance();
+        BitmapManager bitmapManager = BitmapManagerImpl.getInstance();
 
-        List<ClassicPicture> pictures = new ArrayList<>();
+        List<ClassicPicture> classicPictures = new ArrayList<>();
+
+        public ClassicListAdapter() {
+            bus.register(this);
+        }
+
+        public void loadData() {
+            classicPictureManager.getAllClassicPictures();
+        }
+
         @Override
         public int getCount() {
-            return pictures.size();
+            return classicPictures.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return pictures.get(i);
+            return classicPictures.get(i);
         }
 
         @Override
@@ -234,8 +257,17 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
                 disorderView.setLayoutParams(getLayoutParams());
                 viewHolder = new ViewHolder(disorderView);
             }
-            viewHolder.setClassicPicture(pictures.get(i));
+            viewHolder.setClassicPicture(classicPictures.get(i));
             return disorderView;
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+        public void onEventMainThread(ClassicPicturesLoadEvent event) {
+            Log.d("Event-MainThread", TAG + " - ClassicPicturesLoadEvent");
+            if (event.result == Result.Success) {
+                classicPictures = event.classicPictures;
+                this.notifyDataSetChanged();
+            }
         }
 
         private ViewGroup.LayoutParams getLayoutParams() {
@@ -245,16 +277,6 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             int imageW = displayWidth / 3;
             int imageH = imageW * 4 / 3;
             return new ListView.LayoutParams(imageW, imageH);
-        }
-
-        public void loadData() {
-            new QueryAllClassicPicturesOperation().callback(new Operation.Callback<List, Void>() {
-                public void onSuccessMainThread(List list) {
-                    Log.d(TAG, "Query all classic picture success, total size:" + list.size());
-                    ClassicListAdapter.this.pictures = list;
-                    ClassicListAdapter.this.notifyDataSetChanged();
-                }
-            }).enqueue();
         }
 
         class ViewHolder implements View.OnLongClickListener, View.OnClickListener{
@@ -271,19 +293,12 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
                 view.setOnClickListener(this);
                 view.setOnLongClickListener(this);
                 ButterKnife.bind(this, view);
+                bus.register(this);
             }
 
             public void setClassicPicture(final ClassicPicture picture) {
                 this.classicPicture = picture;
-                new LoadPictureOperation(picture.uuid, picture.networkPath).callback(new Operation.Callback<BitmapEntry, Void>() {
-                    @Override
-                    public void onSuccessMainThread(BitmapEntry bitmapEntry) {
-                        if(classicPicture.uuid.equals(bitmapEntry.uuid)) {
-                            disorderImageView.setBitmap(bitmapEntry.bitmap);
-                        }
-                    }
-                }).enqueue();
-
+                bitmapManager.loadBitmapByUuid(picture.uuid);
                 switch (gameLevel) {
                     case GameLevel.EASY:
                         disorderImageView.setPositionList(DisorderUtil.decode(picture.easyData));
@@ -322,9 +337,16 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), ClassicGameActivity.class);
-                intent.putExtra("GameLevel", gameLevel);
-                intent.putExtra("uuid", classicPicture.uuid);
+                intent.putExtra(ClassicGameActivity.CLASSICPICTURE_UUID, classicPicture.uuid);
+                intent.putExtra(ClassicGameActivity.GAME_LEVEL, gameLevel);
                 startActivity(intent);
+            }
+
+            @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+            public void onEventMainThread(BitmapLoadEvent event) {
+                if (event.result == Result.Success && TextUtils.equals(event.uuid, classicPicture.uuid)) {
+                    disorderImageView.setBitmap(event.bitmap);
+                }
             }
         }
     }

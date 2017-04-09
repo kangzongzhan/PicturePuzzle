@@ -10,7 +10,6 @@ public class SerialPicturePo {
         public String uuid;
         public String name;
         public String serialUuid;
-        public String networkPath;
         public String easyData;
         public String mediumData;
         public String hardData;

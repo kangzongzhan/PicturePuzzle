@@ -1,5 +1,6 @@
 package com.khgame.picturepuzzle.ui.activity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,8 @@ public class MainActivity extends SquaredActivity {
         ButterKnife.bind(this);
         viewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(onPageChangeListener);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
+        setWindowStatusBarColor(getResources().getColor(R.color.colorPrimary));
     }
 
     private void initToolbar(Toolbar toolbar) {
@@ -98,7 +101,5 @@ public class MainActivity extends SquaredActivity {
 
         }
     };
-
-
 
 }

@@ -42,7 +42,7 @@ public class GameView extends FrameLayout {
     private int MIN_DISTANCE = 30;
     private int ANIMATION_DURATION = 150;
     private Map<Point, View> viewMap = new HashMap<>();
-    private GameOverListener gameOverListener = DefaultListener;
+    private GameListener gameListener = DefaultListener;
 
     public GameView(Context context) {
         super(context);
@@ -77,14 +77,18 @@ public class GameView extends FrameLayout {
         this.bitmap = bitmap;
         this.isStarted = true;
         this.invalidate();
-        this.post(new Runnable() {
-                @Override
-                public void run() {
-                    calculateOffset();
-                    animateIn();
-                }
-            });
+        this.post(() -> {
+            calculateOffset();
+            animateIn();
+        });
+        this.gameListener.onGameStart();
+    }
 
+    public void end() {
+        this.gameData = null;
+        this.bitmap = null;
+        this.isStarted = false;
+        this.gameListener.onGameEnd();
     }
 
     @Override
@@ -135,13 +139,13 @@ public class GameView extends FrameLayout {
         if(targetView == null) {
             return;
         }
-        gameData = DisorderUtil.swipUp(gameData);
+        DisorderUtil.swipUp(gameData);
         targetView.animate().yBy(-unitHeight).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isSwipping = false;
                 if(gameOver()) {
-                    gameOverListener.onGameOver();
+                    gameListener.onGameOver();
                 }
             }
 
@@ -161,13 +165,13 @@ public class GameView extends FrameLayout {
         if(targetView == null) {
             return;
         }
-        gameData = DisorderUtil.swipDown(gameData);
+        DisorderUtil.swipDown(gameData);
         targetView.animate().yBy(unitHeight).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isSwipping = false;
                 if(gameOver()) {
-                    gameOverListener.onGameOver();
+                    gameListener.onGameOver();
                 }
             }
 
@@ -187,13 +191,13 @@ public class GameView extends FrameLayout {
         if(targetView == null) {
             return;
         }
-        gameData = DisorderUtil.swipLeft(gameData);
+        DisorderUtil.swipLeft(gameData);
         targetView.animate().xBy(-unitWidth).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isSwipping = false;
                 if(gameOver()) {
-                    gameOverListener.onGameOver();
+                    gameListener.onGameOver();
                 }
             }
 
@@ -214,13 +218,13 @@ public class GameView extends FrameLayout {
         if(targetView == null) {
             return;
         }
-        gameData = DisorderUtil.swipRight(gameData);
+        DisorderUtil.swipRight(gameData);
         targetView.animate().xBy(unitWidth).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isSwipping = false;
                 if(gameOver()) {
-                    gameOverListener.onGameOver();
+                    gameListener.onGameOver();
                 }
             }
 
@@ -364,15 +368,27 @@ public class GameView extends FrameLayout {
     public List<Point> getGameData() {
         return gameData;
     }
-    public void setGameOverListener(GameOverListener listener) {
-        this.gameOverListener = listener;
+    public void setGameListener(GameListener listener) {
+        this.gameListener = listener;
     }
-    public interface GameOverListener {
-        void onGameOver();
+    public interface GameListener {
+        void onGameStart(); // start
+        void onGameOver(); // finish
+        void onGameEnd(); // end
     }
-    private static GameOverListener DefaultListener = new GameOverListener() {
+    private static GameListener DefaultListener = new GameListener() {
+        @Override
+        public void onGameStart() {
+
+        }
+
         @Override
         public void onGameOver() {
+        }
+
+        @Override
+        public void onGameEnd() {
+
         }
     };
 }

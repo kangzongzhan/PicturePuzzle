@@ -17,34 +17,17 @@ import java.util.List;
 
 public class UpdateSerialPictureOperation extends DBOperation<SerialPicture, Void> {
     private SerialPicture serialPicture;
-    private List<Point> gameData;
 
-    public UpdateSerialPictureOperation(SerialPicture serialPicture, List<Point> gameData) {
+    public UpdateSerialPictureOperation(SerialPicture serialPicture) {
         this.serialPicture = serialPicture;
-        this.gameData = gameData;
     }
 
     @Override
     protected void doWork() {
-        int gameLevel = GameLevel.getLevel(gameData);
-        String col = null;
-        switch (gameLevel) {
-            case GameLevel.EASY:
-                col = ClassicPictureTable.Cols.EASYDATA;
-                serialPicture.easyData = DisorderUtil.encode(gameData);
-                break;
-            case GameLevel.MEDIUM:
-                col = ClassicPictureTable.Cols.MEDIUMDATA;
-                serialPicture.mediumData = DisorderUtil.encode(gameData);
-                break;
-            case GameLevel.HARD:
-                col = ClassicPictureTable.Cols.HARDDATA;
-                serialPicture.hardData = DisorderUtil.encode(gameData);
-                break;
-        }
-
         ContentValues values = new ContentValues();
-        values.put(col, DisorderUtil.encode(gameData));
+        values.put(SerialPictureTable.Cols.EASYDATA, serialPicture.easyData);
+        values.put(SerialPictureTable.Cols.MEDIUMDATA, serialPicture.mediumData);
+        values.put(SerialPictureTable.Cols.HARDDATA, serialPicture.hardData);
         int rows = db.update(SerialPictureTable.NAME, values, SerialPictureTable.Cols.UUID + "='" + serialPicture.uuid + "'", null);
         if(rows == 0) {
             postFailure(null);

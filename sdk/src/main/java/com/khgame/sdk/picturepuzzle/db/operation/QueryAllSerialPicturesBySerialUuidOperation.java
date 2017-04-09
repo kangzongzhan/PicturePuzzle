@@ -13,11 +13,11 @@ import java.util.List;
  * Created by zkang on 2017/2/25.
  */
 
-public class GetAllSerialPictureByUuidOperation extends DBOperation<List<SerialPicturePo>, Void> {
+public class QueryAllSerialPicturesBySerialUuidOperation extends DBOperation<List<SerialPicturePo>, Void> {
 
     private String uuid;
 
-    public GetAllSerialPictureByUuidOperation(String uuid) {
+    public QueryAllSerialPicturesBySerialUuidOperation(String uuid) {
         this.uuid = uuid;
     }
 
@@ -42,7 +42,6 @@ public class GetAllSerialPictureByUuidOperation extends DBOperation<List<SerialP
             serialPicturePo.easyData = cursor.getString(cursor.getColumnIndex(Cols.EASYDATA));
             serialPicturePo.mediumData = cursor.getString(cursor.getColumnIndex(Cols.MEDIUMDATA));
             serialPicturePo.hardData = cursor.getString(cursor.getColumnIndex(Cols.HARDDATA));
-            serialPicturePo.networkPath = cursor.getString(cursor.getColumnIndex(Cols.URL));
             serialPicturePos.add(serialPicturePo);
         }
         postSuccess(serialPicturePos);

@@ -7,7 +7,6 @@ package com.khgame.sdk.picturepuzzle.model;
 public class ClassicPicture {
 
     public String uuid;
-    public String networkPath;
     public String easyData;
     public String mediumData;
     public String hardData;

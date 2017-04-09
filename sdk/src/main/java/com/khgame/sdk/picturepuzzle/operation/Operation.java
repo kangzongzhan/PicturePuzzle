@@ -25,8 +25,9 @@ public abstract class Operation<S, F> implements Runnable {
         doWork();
     }
 
-    public void enqueue() {
+    public Operation enqueue() {
         executor.execute(this);
+        return this;
     }
 
     public void execute() {
