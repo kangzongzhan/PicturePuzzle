@@ -4,4 +4,9 @@
     <string name="action_settings">配置</string>
     <string name="classic">经典</string>
     <string name="serial">系列</string>
+    <string name="camera">拍照</string>
+    <string name="gallery">相册</string>
+    <string name="tips">提示</string>
+    <string name="install_serial_hint">确定下载吗？</string>
+    <string name="delete_hint">确定删除吗？</string>
 </resources>

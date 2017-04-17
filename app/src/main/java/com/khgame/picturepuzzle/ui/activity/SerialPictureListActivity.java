@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -82,7 +83,7 @@ public class SerialPictureListActivity extends SquaredActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateTheme(primaryColor, secondaryColor);
 
         gridView.setAdapter(adapter);
@@ -100,6 +101,17 @@ public class SerialPictureListActivity extends SquaredActivity {
     protected void onResume() {
         super.onResume();
         updateFabImage();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
@@ -137,6 +149,7 @@ public class SerialPictureListActivity extends SquaredActivity {
                 break;
         }
         updateFabImage();
+        serialManager.updateSerial(serial);
         adapter.notifyDataSetChanged();
     }
 

@@ -2,21 +2,31 @@ package com.khgame.picturepuzzle.ui.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.Image;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.khgame.picturepuzzle.R;
+import com.khgame.sdk.picturepuzzle.BuildConfig;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
+import com.khgame.sdk.picturepuzzle.core.GameLevel;
 import com.khgame.sdk.picturepuzzle.core.Point;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import static com.khgame.sdk.picturepuzzle.core.GameLevel.xNums;
 import static com.khgame.sdk.picturepuzzle.core.GameLevel.yNums;
@@ -31,6 +41,8 @@ public class GameView extends FrameLayout {
     private FrameLayout fontLayout; // 前景
 
     private List<Point> gameData;
+    private int gameLevel;
+    private int xNums, yNums;
     private Bitmap bitmap;
 
     private int xOffset;
@@ -38,12 +50,15 @@ public class GameView extends FrameLayout {
     private int unitWidth;
     private int unitHeight;
     private boolean isStarted = false;
-    private boolean isSwipping = false;
+    private boolean isAnimating = false;
+    private boolean isShowingPicture = false; // is showing the real picture
     private int MIN_DISTANCE = 30;
     private int ANIMATION_DURATION = 150;
-    private Map<Point, View> viewMap = new HashMap<>();
+    private int TIPS_DURATION = 700;
+    private Set<PieceViewHolder> viewSet = new HashSet<>();
     private GameListener gameListener = DefaultListener;
-
+    private PieceViewHolder emptyView;
+    private int backPieceColor = Color.GRAY;
     public GameView(Context context) {
         super(context);
         init();
@@ -74,6 +89,9 @@ public class GameView extends FrameLayout {
             throw new NullPointerException("Bitmap cannot be null");
         }
         this.gameData = gameData;
+        this.gameLevel = GameLevel.getLevel(gameData);
+        this.xNums = xNums(gameData);
+        this.yNums = yNums(gameData);
         this.bitmap = bitmap;
         this.isStarted = true;
         this.invalidate();
@@ -130,117 +148,89 @@ public class GameView extends FrameLayout {
         return super.onTouchEvent(event);
     }
 
-    private void swipUp() {
-        if(isSwipping) {
+    public void swipUp() {
+        if(isAnimating || isShowingPicture) {
             return;
         }
 
-        View targetView = downViewOfEmpty();
+        PieceViewHolder targetView = downViewOfEmpty();
         if(targetView == null) {
             return;
         }
-        DisorderUtil.swipUp(gameData);
-        targetView.animate().yBy(-unitHeight).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isSwipping = false;
-                if(gameOver()) {
-                    gameListener.onGameOver();
-                }
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isSwipping = true;
-            }
-        }).setDuration(ANIMATION_DURATION).start();
-
+        if (DisorderUtil.swipUp(gameData)) {
+            targetView.swipUp();
+            emptyView.swipDown();
+        }
     }
-    private void swipDown() {
-        if(isSwipping) {
+    public void swipDown() {
+        if(isAnimating || isShowingPicture) {
             return;
         }
 
-        View targetView = upViewOfEmpty();
+        PieceViewHolder targetView = upViewOfEmpty();
         if(targetView == null) {
             return;
         }
-        DisorderUtil.swipDown(gameData);
-        targetView.animate().yBy(unitHeight).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isSwipping = false;
-                if(gameOver()) {
-                    gameListener.onGameOver();
-                }
-            }
 
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isSwipping = true;
-            }
-        }).setDuration(ANIMATION_DURATION).start();
-
+        if (DisorderUtil.swipDown(gameData)) {
+            targetView.swipDown();
+            emptyView.swipUp();
+        }
     }
-    private void swipLeft() {
-        if(isSwipping) {
+    public void swipLeft() {
+        if(isAnimating || isShowingPicture) {
             return;
         }
 
-        View targetView = rightViewOfEmpty();
+        PieceViewHolder targetView = rightViewOfEmpty();
         if(targetView == null) {
             return;
         }
-        DisorderUtil.swipLeft(gameData);
-        targetView.animate().xBy(-unitWidth).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isSwipping = false;
-                if(gameOver()) {
-                    gameListener.onGameOver();
-                }
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isSwipping = true;
-            }
-        }).setDuration(ANIMATION_DURATION).start();
-
-
+        if (DisorderUtil.swipLeft(gameData)) {
+            targetView.swipLeft();
+            emptyView.swipRight();
+        }
     }
-    private void swipRight() {
-        if(isSwipping) {
+
+    public void swipRight() {
+        if(isAnimating || isShowingPicture) {
             return;
         }
 
-        View targetView = leftViewOfEmpty();
+        PieceViewHolder targetView = leftViewOfEmpty();
         if(targetView == null) {
             return;
         }
-        DisorderUtil.swipRight(gameData);
-        targetView.animate().xBy(unitWidth).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isSwipping = false;
-                if(gameOver()) {
-                    gameListener.onGameOver();
-                }
-            }
+        if (DisorderUtil.swipRight(gameData)) {
+            targetView.swipRight();
+            emptyView.swipLeft();
+        }
+    }
 
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isSwipping = true;
-            }
-        }).setDuration(ANIMATION_DURATION).start();
+    public void moveToRealPoint() {
+        if (isShowingPicture || isAnimating) {
+            return;
+        }
+        isShowingPicture = true;
+        for(PieceViewHolder viewHolder : viewSet) {
+            viewHolder.moveToRealPoint();
+        }
+    }
 
-
+    public void moveToNowPoint() {
+        if (!isShowingPicture || isAnimating) {
+            return;
+        }
+        isShowingPicture = false;
+        for(PieceViewHolder viewHolder : viewSet) {
+            viewHolder.moveToNowPoint();
+        }
     }
 
     public void animateIn() {
         backLayout.removeAllViews();
         fontLayout.removeAllViews();
-        viewMap.clear();
+        viewSet.clear();
         final int w = bitmap.getWidth() / xNums(gameData);
         final int h = bitmap.getHeight() / yNums(gameData);
         for(Point realPoint : gameData) {
@@ -257,20 +247,28 @@ public class GameView extends FrameLayout {
         }
     }
     private void addFontView(Point nowPoint, Point realPoint, Bitmap bitmap) {
-        ImageView imageView = new ImageView(getContext());
+        View view = LayoutInflater.from(this.getContext()).inflate(R.layout.piece_view, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
         imageView.setImageBitmap(bitmap);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         LayoutParams lp = new LayoutParams(unitWidth, unitHeight);
         lp.leftMargin = xOffset + nowPoint.x * unitWidth;
         lp.topMargin = yOffset + nowPoint.y * unitHeight;
-        fontLayout.addView(imageView, lp);
-        viewMap.put(realPoint, imageView);
+        fontLayout.addView(view, lp);
+
+        PieceViewHolder viewHolder = new PieceViewHolder(view, realPoint, nowPoint);
+        viewSet.add(viewHolder);
+
+        if (realPoint.x == 0 && realPoint.y == yNums) {
+            emptyView = viewHolder;
+        }
+
     }
 
     private void addBackView(Point nowPoint, Point realPoint) {
         View view = new View(getContext());
-        view.setBackgroundColor(Color.RED);
+        view.setBackgroundColor(backPieceColor);
         LayoutParams lp = new LayoutParams(unitWidth, unitHeight);
         lp.leftMargin = xOffset + nowPoint.x * unitWidth;
         lp.topMargin = yOffset + nowPoint.y * unitHeight;
@@ -307,52 +305,91 @@ public class GameView extends FrameLayout {
     }
 
 
-    private View upViewOfEmpty() {
-        int indexOfDownEmpty = indexOfEmpty(gameData) - xNums(gameData);
-        if(!isValideIndex(indexOfDownEmpty)) {
+    private PieceViewHolder upViewOfEmpty() {
+        final Point nowPointOfEmpty = emptyView.nowPoint;
+        Point upPoint = new Point();
+        upPoint.x = nowPointOfEmpty.x;
+        upPoint.y = nowPointOfEmpty.y - 1;
+        if(!isValidePoint(upPoint)) {
             return null;
         }
-        Point upPointOfEmpty = gameData.get(indexOfDownEmpty);
-        return viewMap.get(upPointOfEmpty);
-    }
-    private View downViewOfEmpty() {
-        int indexOfDownEmpty = indexOfEmpty(gameData) + xNums(gameData);
-        if(!isValideIndex(indexOfDownEmpty)) {
-            return null;
-        }
-        Point downPointOfEmpty = gameData.get(indexOfDownEmpty);
-        return viewMap.get(downPointOfEmpty);
-    }
-    private View leftViewOfEmpty() {
-        int indexOfDownEmpty = indexOfEmpty(gameData) - 1;
-        if(!isValideIndex(indexOfDownEmpty) || indexOfEmpty(gameData) % xNums(gameData) == 0) {
-            return null;
-        }
-        Point leftPointOfEmpty = gameData.get(indexOfDownEmpty);
-        return viewMap.get(leftPointOfEmpty);
-    }
-    private View rightViewOfEmpty() {
-        int indexOfDownEmpty = indexOfEmpty(gameData) + 1;
-        if(!isValideIndex(indexOfDownEmpty) || (indexOfEmpty(gameData) + 1) % xNums(gameData) == 0) {
-            return null;
-        }
-        Point rightPointOfEmpty = gameData.get(indexOfDownEmpty);
-        return viewMap.get(rightPointOfEmpty);
+        return getViewHolderByNowPoint(upPoint);
     }
 
-    private int indexOfEmpty(List<Point> gameData) {
-        Point ponit = new Point();
-        ponit.x = 0;
-        ponit.y = yNums(gameData);
-        return gameData.indexOf(ponit);
+    private PieceViewHolder downViewOfEmpty() {
+        final Point nowPointOfEmpty = emptyView.nowPoint;
+        Point downPoint = new Point();
+        downPoint.x = nowPointOfEmpty.x;
+        downPoint.y = nowPointOfEmpty.y + 1;
+        if(!isValidePoint(downPoint)) {
+            return null;
+        }
+        return getViewHolderByNowPoint(downPoint);
     }
 
-    private boolean isValideIndex(int index) {
+    private PieceViewHolder leftViewOfEmpty() {
+        final Point nowPointOfEmpty = emptyView.nowPoint;
+        Point leftPoint = new Point();
+        leftPoint.x = nowPointOfEmpty.x - 1;
+        leftPoint.y = nowPointOfEmpty.y;
+        if(!isValidePoint(leftPoint)) {
+            return null;
+        }
+        return getViewHolderByNowPoint(leftPoint);
+    }
+
+    private PieceViewHolder rightViewOfEmpty() {
+        final Point nowPointOfEmpty = emptyView.nowPoint;
+        Point rightPoint = new Point();
+        rightPoint.x = nowPointOfEmpty.x + 1;
+        rightPoint.y = nowPointOfEmpty.y;
+        if(!isValidePoint(rightPoint)) {
+            return null;
+        }
+        return getViewHolderByNowPoint(rightPoint);
+    }
+
+    private Point getNowPointOfEmpty(List<Point> gameData) {
+        Point point = new Point();
+        point.x = 0;
+        point.y = yNums(gameData);
+        int index = gameData.indexOf(point);
+
+        point.x = index % xNums(gameData);
+        point.y = index / xNums(gameData);
+
+        return point;
+    }
+
+    private boolean isValidePoint(Point point) {
+        int index = point.y * xNums + point.x;
         if(index < 0 || index >= gameData.size()) {
             return false;
         }
+
+        if (point.x < 0 || point.y < 0 || point.x >= xNums || point.y > yNums) {
+            return false;
+        }
+
         return true;
     }
+    private PieceViewHolder getViewHolderByRealPoint(Point realPoint) {
+        for(PieceViewHolder viewHolder:viewSet) {
+            if (viewHolder.realPoint.equals(realPoint)) {
+                return viewHolder;
+            }
+        }
+        return null;
+    }
+    private PieceViewHolder getViewHolderByNowPoint(Point nowPoint) {
+        for(PieceViewHolder viewHolder:viewSet) {
+            if (viewHolder.nowPoint.equals(nowPoint)) {
+                return viewHolder;
+            }
+        }
+        return null;
+    }
+
     private boolean gameOver() {
         boolean gameOver = true;
         for(Point point: gameData) {
@@ -364,6 +401,9 @@ public class GameView extends FrameLayout {
 
     public boolean isStarted() {
         return isStarted;
+    }
+    public boolean isShowingPicture() {
+        return isShowingPicture;
     }
     public List<Point> getGameData() {
         return gameData;
@@ -391,4 +431,157 @@ public class GameView extends FrameLayout {
 
         }
     };
+
+    class PieceViewHolder {
+        private View view;
+        private ImageView imageView;
+        private LinearLayout infoLayout;
+        private TextView realText;
+        private TextView nowText;
+        private Point realPoint;
+        private Point nowPoint;
+        private PieceViewHolder(View view, Point realPoint, Point nowPoint) {
+            this.view = view;
+            this.imageView = (ImageView) view.findViewById(R.id.image);
+            this.infoLayout = (LinearLayout) view.findViewById(R.id.piece_info);
+            this.realText = (TextView) view.findViewById(R.id.realPoint);
+            this.nowText = (TextView) view.findViewById(R.id.nowPoint);
+            this.realPoint = realPoint;
+            this.nowPoint = nowPoint;
+            updateText();
+        }
+
+        private void updateText() {
+            if (BuildConfig.DEBUG) {
+                infoLayout.setVisibility(GONE);
+            } else {
+                infoLayout.setVisibility(VISIBLE);
+                realText.setText("Real:" + realPoint.toString());
+                nowText.setText("Now:" + nowPoint.toString());
+            }
+        }
+
+        private void swipUp() {
+            view.animate().yBy(-unitHeight).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("kzz", "animation end");
+                    nowPoint.y--;
+                    updateText();
+                    isAnimating = false;
+                    if(gameOver()) {
+                        gameListener.onGameOver();
+                    }
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d("kzz", "animation start");
+                    isAnimating = true;
+                }
+            }).setDuration(ANIMATION_DURATION).start();
+        }
+
+        private void swipDown() {
+            view.animate().yBy(unitHeight).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("kzz", "animation end");
+                    nowPoint.y++;
+                    updateText();
+                    isAnimating = false;
+                    if(gameOver()) {
+                        gameListener.onGameOver();
+                    }
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d("kzz", "animation start");
+                    isAnimating = true;
+                }
+            }).setDuration(ANIMATION_DURATION).start();
+        }
+
+        private void swipLeft() {
+            view.animate().xBy(-unitWidth).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    nowPoint.x--;
+                    updateText();
+                    isAnimating = false;
+                    if(gameOver()) {
+                        gameListener.onGameOver();
+                    }
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    isAnimating = true;
+                }
+            }).setDuration(ANIMATION_DURATION).start();
+        }
+
+        private void swipRight() {
+            view.animate().xBy(unitWidth).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("kzz", "animation end");
+                    nowPoint.x++;
+                    updateText();
+                    isAnimating = false;
+                    if(gameOver()) {
+                        gameListener.onGameOver();
+                    }
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d("kzz", "animation start");
+                    isAnimating = true;
+                }
+            }).setDuration(ANIMATION_DURATION).start();
+        }
+
+        private void moveToRealPoint() {
+            AnimatorSet animationSet = new AnimatorSet();
+            ObjectAnimator animator1 = ObjectAnimator.ofFloat(view, "x",  view.getX() + unitWidth * (realPoint.x - nowPoint.x));
+            ObjectAnimator animator2 = ObjectAnimator.ofFloat(view, "y",  view.getY() + unitHeight * (realPoint.y - nowPoint.y));
+            animationSet.playTogether(animator1, animator2);
+            animationSet.setDuration(TIPS_DURATION);
+            animationSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    isAnimating = true;
+                }
+            });
+            animationSet.start();
+        }
+
+        private void moveToNowPoint() {
+            AnimatorSet animationSet = new AnimatorSet();
+            ObjectAnimator animator1 = ObjectAnimator.ofFloat(view, "x", view.getX() + unitWidth * (nowPoint.x - realPoint.x));
+            ObjectAnimator animator2 = ObjectAnimator.ofFloat(view, "y", view.getY() + unitHeight * (nowPoint.y - realPoint.y));
+            animationSet.playTogether(animator1, animator2);
+            animationSet.setDuration(TIPS_DURATION);
+            animationSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    isAnimating = true;
+                }
+            });
+            animationSet.start();
+        }
+    }
+
 }

@@ -218,7 +218,6 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
     class ClassicListAdapter extends BaseAdapter  {
         ClassicPictureManager classicPictureManager = ClassicPictureManagerImpl.getInstance();
         BitmapManager bitmapManager = BitmapManagerImpl.getInstance();
-
         List<ClassicPicture> classicPictures = new ArrayList<>();
 
         public ClassicListAdapter() {
@@ -316,19 +315,16 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ClassicListFragment.this.getContext());
-                builder.setMessage("确定要删除吗？")
-                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                builder.setMessage(R.string.delete_hint)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                                 new DeleteClassicPictureByUuid(classicPicture.uuid).callback(new Operation.Callback<Void, Void>() {
                                     @Override
                                     public void onSuccessMainThread(Void aVoid) {
                                         loadData();
                                     }
                                 }).enqueue();
-                            }
                         })
-                        .setNegativeButton("否", null);
+                        .setNegativeButton(android.R.string.no, null);
                 builder.create().show();
                 return true;
             }

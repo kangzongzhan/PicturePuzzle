@@ -3,15 +3,21 @@ package com.khgame.sdk.picturepuzzle.serial;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.khgame.sdk.picturepuzzle.BuildConfig;
 import com.khgame.sdk.picturepuzzle.common.Result;
+import com.khgame.sdk.picturepuzzle.common.SettingManager;
 import com.khgame.sdk.picturepuzzle.db.model.SerialPo;
 import com.khgame.sdk.picturepuzzle.db.operation.QueryAllSerialsOperation;
 import com.khgame.sdk.picturepuzzle.db.operation.QuerySerialBySerialUuidOperation;
+import com.khgame.sdk.picturepuzzle.db.operation.UpdateSerialOperation;
+import com.khgame.sdk.picturepuzzle.events.SerialFilterPassEvent;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.operation.InstallSerialOperation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.service.model.SerialDto;
 import com.khgame.sdk.picturepuzzle.service.operation.GetAllSerialsFromServiceOperation;
+import com.khgame.sdk.picturepuzzle.service.operation.GetFilterByStoreName;
+import com.khgame.sdk.picturepuzzle.service.operation.GetReviewSerialsFromServiceOperation;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -27,6 +33,7 @@ import java.util.Map;
 public class SerialManagerImpl implements SerialManager {
     private static final String TAG = "SerialManagerImpl";
     private EventBus bus = EventBus.getDefault();
+    private SettingManager settings = SettingManager.Instance();
 
     private Map<String, Operation> installingSerials = new HashMap();
 
@@ -61,19 +68,35 @@ public class SerialManagerImpl implements SerialManager {
             }
         }).enqueue();
 
-        // #2 load from network
-        new GetAllSerialsFromServiceOperation().callback(new Operation.Callback<List<SerialDto>, Void>() {
-            @Override
-            public void onSuccess(List<SerialDto> serialDtos) {
-                serialsNetwork.addAll(serialDtos);
-                serialList.clear();
-                serialList.addAll(merge(serialsDB, serialsNetwork));
-                SerialsLoadEvent event = new SerialsLoadEvent(Result.Success);
-                event.serials = serialList;
-                bus.post(event);
-            }
-        }).enqueue();
-
+        // # check if load data from network enable
+        if (!hasPassedReview()) {
+            this.updateSerialFilter(BuildConfig.appStore);
+            // #2 load serials for review from network
+            new GetReviewSerialsFromServiceOperation().callback(new Operation.Callback<List<SerialDto>, Void>() {
+                @Override
+                public void onSuccess(List<SerialDto> serialDtos) {
+                    serialsNetwork.addAll(serialDtos);
+                    serialList.clear();
+                    serialList.addAll(merge(serialsDB, serialsNetwork));
+                    SerialsLoadEvent event = new SerialsLoadEvent(Result.Success);
+                    event.serials = serialList;
+                    bus.post(event);
+                }
+            }).enqueue();
+        } else {
+            // #2 load all serial from network
+            new GetAllSerialsFromServiceOperation().callback(new Operation.Callback<List<SerialDto>, Void>() {
+                @Override
+                public void onSuccess(List<SerialDto> serialDtos) {
+                    serialsNetwork.addAll(serialDtos);
+                    serialList.clear();
+                    serialList.addAll(merge(serialsDB, serialsNetwork));
+                    SerialsLoadEvent event = new SerialsLoadEvent(Result.Success);
+                    event.serials = serialList;
+                    bus.post(event);
+                }
+            }).enqueue();
+        }
     }
 
     @Override
@@ -129,6 +152,36 @@ public class SerialManagerImpl implements SerialManager {
                 bus.post(event);
             }
         }).enqueue();
+    }
+
+    @Override
+    public void updateSerialFilter(String appStore) {
+        new GetFilterByStoreName(appStore).callback(new Operation.Callback<Map<String, Boolean>, Void>() {
+            @Override
+            public void onSuccessMainThread(Map<String, Boolean> stringBooleanMap) {
+                if (stringBooleanMap.containsKey(String.valueOf(BuildConfig.VERSION_CODE))) {
+                    boolean filterResult = stringBooleanMap.get(String.valueOf(BuildConfig.VERSION_CODE));
+                    if (filterResult) {
+                        bus.post(new SerialFilterPassEvent());
+                    }
+                }
+            }
+        }).enqueue();
+    }
+
+    @Override
+    public void updateSerial(Serial serial) {
+        new UpdateSerialOperation(serial).enqueue();
+    }
+
+    @Override
+    public boolean hasPassedReview() {
+        return settings.getBoolean("VERSION:" + BuildConfig.VERSION_CODE, false);
+    }
+
+    @Override
+    public void setPassedReview() {
+        settings.setBoolean("VERSION:" + BuildConfig.VERSION_CODE, true);
     }
 
     /**

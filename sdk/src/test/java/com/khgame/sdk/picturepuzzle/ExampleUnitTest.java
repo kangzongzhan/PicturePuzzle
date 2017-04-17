@@ -5,6 +5,9 @@ import com.khgame.sdk.picturepuzzle.core.GameLevel;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -15,7 +18,9 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        //assertEquals(4, 2 + 2);
+        Map<String, Boolean> map = new HashMap<>();
+        assertEquals(false, map.get("1"));
     }
 
 

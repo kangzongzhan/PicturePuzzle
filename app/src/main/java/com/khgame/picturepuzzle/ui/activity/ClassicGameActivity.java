@@ -1,14 +1,24 @@
 package com.khgame.picturepuzzle.ui.activity;
 
+import android.animation.ValueAnimator;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
+import com.khgame.picturepuzzle.ui.view.CountDownView;
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
 import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManager;
 import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
@@ -50,6 +60,8 @@ public class ClassicGameActivity extends SquaredActivity {
     GameView gameView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.countdown)
+    CountDownView countDownView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +71,16 @@ public class ClassicGameActivity extends SquaredActivity {
 
         uuid = getIntent().getStringExtra(ClassicGameActivity.CLASSICPICTURE_UUID);
         gameLevel = getIntent().getIntExtra(ClassicGameActivity.GAME_LEVEL, GameLevel.EASY);
-
         gameView.setGameListener(gameListener);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         updateFabImage();
+        updateTheme(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
+        countDownView.setColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
+        countDownView.setDuration(8000);
     }
 
     @Override
@@ -90,9 +103,21 @@ public class ClassicGameActivity extends SquaredActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.menu_game_activity, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        }
+        if (item.getItemId() == R.id.tips) {
+            showTips();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -112,6 +137,7 @@ public class ClassicGameActivity extends SquaredActivity {
                 gameLevel = GameLevel.EASY;
                 break;
         }
+        getIntent().putExtra(GAME_LEVEL, gameLevel);
         updateFabImage();
         tryToStartGame();
     }
@@ -218,4 +244,104 @@ public class ClassicGameActivity extends SquaredActivity {
                 break;
         }
     }
+
+    private void updateTheme(int primaryColor, int secondaryColor) {
+        setWindowStatusBarColor(primaryColor);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
+        fab.setBackgroundTintList(ColorStateList.valueOf(secondaryColor));
+    }
+
+    private void showTips() {
+        if (gameView.isShowingPicture()) {
+            return;
+        }
+
+        gameView.moveToRealPoint();
+
+        Animation scaleOut = AnimationUtils.loadAnimation(this, R.anim.scale_out);
+        scaleOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                countDownView.setTimeOutListener(() -> tipsEnd());
+                countDownView.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.INVISIBLE);
+                Animation scaleIn = AnimationUtils.loadAnimation(ClassicGameActivity.this, R.anim.scale_in);
+                scaleIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        countDownView.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                countDownView.startAnimation(scaleIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        fab.startAnimation(scaleOut);
+    }
+
+    private void tipsEnd() {
+
+        if (!gameView.isShowingPicture()) {
+            return;
+        }
+
+        gameView.moveToNowPoint();
+
+        Animation scaleOut = AnimationUtils.loadAnimation(this, R.anim.scale_out);
+        scaleOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                countDownView.setVisibility(View.INVISIBLE);
+                Animation scaleIn = AnimationUtils.loadAnimation(ClassicGameActivity.this, R.anim.scale_in);
+                scaleIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        fab.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                fab.startAnimation(scaleIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        countDownView.startAnimation(scaleOut);
+    }
+
 }

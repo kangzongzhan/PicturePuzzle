@@ -3,6 +3,7 @@ package com.khgame.sdk.picturepuzzle.operation;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.util.concurrent.Executor;
 
@@ -16,22 +17,34 @@ import java.util.concurrent.Executor;
  */
 public abstract class Operation<S, F> implements Runnable {
 
+    private static final String TAG = "Operation";
+
+    private long beginTime;
     private Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
     private Handler H = new Handler(Looper.getMainLooper());
     protected Callback callback = NullCallback;
 
     @Override
     public void run() {
+        Log.v(TAG, this.getClass().getSimpleName() + " begin.");
+        this.beginTime = System.currentTimeMillis();
         doWork();
+        long costTime = System.currentTimeMillis() - this.beginTime;
+        Log.v(TAG, this.getClass().getSimpleName() + "end, cost time:" + costTime);
     }
 
     public Operation enqueue() {
+        Log.v(TAG, "Operation enqueue : " + this.getClass().getSimpleName());
         executor.execute(this);
         return this;
     }
 
     public void execute() {
-         doWork();
+        Log.v(TAG, this.getClass().getSimpleName() + " begin.");
+        this.beginTime = System.currentTimeMillis();
+        doWork();
+        long costTime = System.currentTimeMillis() - this.beginTime;
+        Log.v(TAG, this.getClass().getSimpleName() + "end, cost time:" + costTime);
     }
 
     public Operation callback(Callback<S, F> callback) {

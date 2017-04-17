@@ -1,8 +1,10 @@
 package com.khgame.picturepuzzle.ui.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import com.khgame.sdk.picturepuzzle.common.BitmapManager;
 import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
 import com.khgame.sdk.picturepuzzle.common.Result;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
+import com.khgame.sdk.picturepuzzle.events.SerialFilterPassEvent;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
@@ -122,6 +125,11 @@ public class SerialListFragment extends SquaredFragment {
             this.notifyDataSetChanged();
         }
 
+        @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+        public void onEventMainThread(SerialFilterPassEvent event) {
+            serialManager.setPassedReview();
+            serialManager.loadSerials();
+        }
         @Override
         public int getCount() {
             return serials.size();
@@ -186,9 +194,14 @@ public class SerialListFragment extends SquaredFragment {
 
             @Override
             public void onClick(View v) {
+
                 if(serial.installState == Serial.State.UNINSTALL) {
                     Log.d("kzz", "开始安装");
-                    serialManager.install(serial);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(R.string.install_serial_hint);
+                    builder.setPositiveButton(android.R.string.yes, (dialog, which) -> serialManager.install(serial));
+                    builder.setNegativeButton(android.R.string.no, null);
+                    builder.create().show();
                 }
 
                 if(serial.installState == Serial.State.INSTALLED) {

@@ -27,4 +27,23 @@ public interface SerialManager {
      */
     void getSerialBySerialUuid(String serialUuid);
 
+    /**
+     * update serial filter
+     */
+    void updateSerialFilter(String appStore);
+
+    /**
+     * update serial
+     */
+    void updateSerial(Serial serial);
+
+    /**
+     * is this version passed app store review
+     */
+    boolean hasPassedReview();
+
+    /**
+     * set this version has passed the review
+     */
+    void setPassedReview();
 }

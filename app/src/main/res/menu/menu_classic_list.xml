@@ -4,10 +4,10 @@
     tools:context="com.khgame.picturepuzzle.ui.activity.MainActivity">
     <item android:id="@+id/action_take_photo"
         android:orderInCategory="101"
-        android:title="拍照"
+        android:title="@string/camera"
         app:showAsAction="never" />
     <item android:id="@+id/action_gallery"
         android:orderInCategory="102"
-        android:title="相册"
+        android:title="@string/gallery"
         app:showAsAction="never" />
 </menu>

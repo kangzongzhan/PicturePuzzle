@@ -1,7 +1,5 @@
 package com.khgame.sdk.picturepuzzle.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.khgame.sdk.picturepuzzle.BuildConfig;
 
 import okhttp3.OkHttpClient;
@@ -15,9 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiProvider {
 
-    public static SerialService getSerialService() {
-        OkHttpClient httpClient;
-        if (true) {
+    private static Retrofit getDefaultRetrofit() {
+        OkHttpClient httpClient = new OkHttpClient();
+        if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClient = new OkHttpClient.Builder().addInterceptor(logging).build();
@@ -28,7 +26,11 @@ public class ApiProvider {
                 .client(httpClient)
                 .build();
 
-        SerialService service = retrofit.create(SerialService.class);
+        return retrofit;
+    }
+
+    public static SerialService getSerialService() {
+        SerialService service = getDefaultRetrofit().create(SerialService.class);
         return service;
     }
 }
