@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
-import com.khgame.sdk.picturepuzzle.serial.SerialManager;
-import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,7 +20,7 @@ public class BitmapManagerImpl implements BitmapManager {
     private BitmapManagerImpl(){}
     public static BitmapManager getInstance() {
         synchronized (BitmapManagerImpl.class) {
-            if(instance != null) {
+            if (instance != null) {
                 return instance;
             }
             instance = new BitmapManagerImpl();

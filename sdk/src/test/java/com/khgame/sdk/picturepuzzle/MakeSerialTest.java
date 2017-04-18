@@ -5,11 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.khgame.sdk.picturepuzzle.common.Constant;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.Point;
-import com.khgame.sdk.picturepuzzle.service.model.SerialDto;
 import com.khgame.sdk.picturepuzzle.service.model.SerialPictureDto;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.File;

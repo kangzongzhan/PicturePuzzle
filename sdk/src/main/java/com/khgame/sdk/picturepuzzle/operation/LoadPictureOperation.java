@@ -29,9 +29,9 @@ public class LoadPictureOperation extends Operation<Bitmap, Void> {
 
         // load bitmap from disk
         File localFile = Application.PictureFile(uuid);
-        if(localFile.exists()) {
+        if (localFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-            if(bitmap != null) {
+            if (bitmap != null) {
                 postSuccess(bitmap);
                 return;
             }
@@ -40,7 +40,7 @@ public class LoadPictureOperation extends Operation<Bitmap, Void> {
         // load bitmap from network
         String url = Constant.PICTURE_URL_BASE + uuid;
         Bitmap bitmap = ImageLoader.getInstance().loadImageSync(url);
-        if(bitmap == null) {
+        if (bitmap == null) {
             postFailure(null);
         }
         postSuccess(bitmap);

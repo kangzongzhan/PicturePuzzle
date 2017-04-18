@@ -1,9 +1,7 @@
 package com.khgame.sdk.picturepuzzle.common;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zkang on 2017/3/31.
@@ -20,9 +18,9 @@ public class Probability {
 
     public synchronized void go() {
         check100();
-        int v = (int)(Math.random() * 100 + 1);
+        int v = (int) (Math.random() * 100 + 1);
         int sum = 0;
-        for(Bean b: beans) {
+        for (Bean b: beans) {
             sum += b.probability;
             if (v <= sum) {
                 b.r.run();

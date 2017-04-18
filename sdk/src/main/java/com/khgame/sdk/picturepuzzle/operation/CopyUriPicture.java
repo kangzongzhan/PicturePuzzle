@@ -20,7 +20,7 @@ public class CopyUriPicture extends Operation<ClassicPicture, Void> {
 
     @Override
     protected void doWork() {
-        if(uri == null) {
+        if (uri == null) {
             postFailure(null);
             return;
         }

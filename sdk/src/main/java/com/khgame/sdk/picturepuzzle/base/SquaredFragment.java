@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
  * Created by zkang on 2017/2/26.
  */
 
-public abstract class SquaredFragment extends Fragment{
+public abstract class SquaredFragment extends Fragment {
 
     protected EventBus bus = EventBus.getDefault();
 
@@ -23,7 +23,7 @@ public abstract class SquaredFragment extends Fragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        if(!bus.isRegistered(this)) {
+        if (!bus.isRegistered(this)) {
             bus.register(this);
         }
     }
@@ -31,7 +31,7 @@ public abstract class SquaredFragment extends Fragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(bus.isRegistered(this)){
+        if (bus.isRegistered(this)) {
             bus.unregister(this);
         }
     }

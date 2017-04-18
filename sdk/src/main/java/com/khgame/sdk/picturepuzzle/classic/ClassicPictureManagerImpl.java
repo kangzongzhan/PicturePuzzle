@@ -1,7 +1,5 @@
 package com.khgame.sdk.picturepuzzle.classic;
 
-import android.util.Log;
-
 import com.khgame.sdk.picturepuzzle.common.Result;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.GameLevel;
@@ -35,7 +33,7 @@ public class ClassicPictureManagerImpl implements ClassicPictureManager {
     private ClassicPictureManagerImpl(){}
     public static ClassicPictureManager getInstance() {
         synchronized (ClassicPictureManagerImpl.class) {
-            if(instance != null) {
+            if (instance != null) {
                 return instance;
             }
             instance = new ClassicPictureManagerImpl();
@@ -78,7 +76,7 @@ public class ClassicPictureManagerImpl implements ClassicPictureManager {
             @Override
             public void onSuccess(List<ClassicPicturePo> classicPicturePos) {
                 List<ClassicPicture> classicPictures = new ArrayList<>();
-                for(ClassicPicturePo classicPicturePo : classicPicturePos) {
+                for (ClassicPicturePo classicPicturePo : classicPicturePos) {
                     ClassicPicture classicPicture = new ClassicPicture();
                     classicPicture.uuid = classicPicturePo.uuid;
                     classicPicture.easyData = classicPicturePo.easyData;

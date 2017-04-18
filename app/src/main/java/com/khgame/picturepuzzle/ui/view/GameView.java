@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.media.Image;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,9 +51,9 @@ public class GameView extends FrameLayout {
     private boolean isStarted = false;
     private boolean isAnimating = false;
     private boolean isShowingPicture = false; // is showing the real picture
-    private int MIN_DISTANCE = 30;
-    private int ANIMATION_DURATION = 150;
-    private int TIPS_DURATION = 700;
+    private static final int MIN_DISTANCE = 30;
+    private static final int ANIMATION_DURATION = 150;
+    private static final int TIPS_DURATION = 700;
     private Set<PieceViewHolder> viewSet = new HashSet<>();
     private GameListener gameListener = DefaultListener;
     private PieceViewHolder emptyView;
@@ -82,10 +81,10 @@ public class GameView extends FrameLayout {
     }
 
     public void start(List<Point> gameData, Bitmap bitmap) {
-        if(gameData == null) {
+        if (gameData == null) {
             throw new NullPointerException("GameData cannot be null");
         }
-        if(bitmap == null) {
+        if (bitmap == null) {
             throw new NullPointerException("Bitmap cannot be null");
         }
         this.gameData = gameData;
@@ -119,25 +118,25 @@ public class GameView extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             downX = event.getX();
             downY = event.getY();
             return true;
         }
-        if(event.getAction() == MotionEvent.ACTION_UP) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             float distanceX = Math.abs(downX - event.getX());
             float distanceY = Math.abs(downY - event.getY());
-            if(distanceX < MIN_DISTANCE && distanceY < MIN_DISTANCE) {
+            if (distanceX < MIN_DISTANCE && distanceY < MIN_DISTANCE) {
                 return super.onTouchEvent(event);
             }
-            if(distanceX > distanceY) { // 左右滑动
-                if(downX > event.getX()) {
+            if (distanceX > distanceY) { // 左右滑动
+                if (downX > event.getX()) {
                     swipLeft();
                 } else {
                     swipRight();
                 }
             } else { // 上下滑动
-                if(downY > event.getY()) {
+                if (downY > event.getY()) {
                     swipUp();
                 } else {
                     swipDown();
@@ -149,12 +148,12 @@ public class GameView extends FrameLayout {
     }
 
     public void swipUp() {
-        if(isAnimating || isShowingPicture) {
+        if (isAnimating || isShowingPicture) {
             return;
         }
 
         PieceViewHolder targetView = downViewOfEmpty();
-        if(targetView == null) {
+        if (targetView == null) {
             return;
         }
         if (DisorderUtil.swipUp(gameData)) {
@@ -163,12 +162,12 @@ public class GameView extends FrameLayout {
         }
     }
     public void swipDown() {
-        if(isAnimating || isShowingPicture) {
+        if (isAnimating || isShowingPicture) {
             return;
         }
 
         PieceViewHolder targetView = upViewOfEmpty();
-        if(targetView == null) {
+        if (targetView == null) {
             return;
         }
 
@@ -178,12 +177,12 @@ public class GameView extends FrameLayout {
         }
     }
     public void swipLeft() {
-        if(isAnimating || isShowingPicture) {
+        if (isAnimating || isShowingPicture) {
             return;
         }
 
         PieceViewHolder targetView = rightViewOfEmpty();
-        if(targetView == null) {
+        if (targetView == null) {
             return;
         }
         if (DisorderUtil.swipLeft(gameData)) {
@@ -193,12 +192,12 @@ public class GameView extends FrameLayout {
     }
 
     public void swipRight() {
-        if(isAnimating || isShowingPicture) {
+        if (isAnimating || isShowingPicture) {
             return;
         }
 
         PieceViewHolder targetView = leftViewOfEmpty();
-        if(targetView == null) {
+        if (targetView == null) {
             return;
         }
         if (DisorderUtil.swipRight(gameData)) {
@@ -212,7 +211,7 @@ public class GameView extends FrameLayout {
             return;
         }
         isShowingPicture = true;
-        for(PieceViewHolder viewHolder : viewSet) {
+        for (PieceViewHolder viewHolder : viewSet) {
             viewHolder.moveToRealPoint();
         }
     }
@@ -222,7 +221,7 @@ public class GameView extends FrameLayout {
             return;
         }
         isShowingPicture = false;
-        for(PieceViewHolder viewHolder : viewSet) {
+        for (PieceViewHolder viewHolder : viewSet) {
             viewHolder.moveToNowPoint();
         }
     }
@@ -233,13 +232,13 @@ public class GameView extends FrameLayout {
         viewSet.clear();
         final int w = bitmap.getWidth() / xNums(gameData);
         final int h = bitmap.getHeight() / yNums(gameData);
-        for(Point realPoint : gameData) {
+        for (Point realPoint : gameData) {
             Point nowPoint = new Point();
             nowPoint.x = gameData.indexOf(realPoint) % xNums(gameData);
             nowPoint.y = gameData.indexOf(realPoint) / xNums(gameData);
 
             Bitmap b = null;
-            if(realPoint.y != yNums(gameData)) {
+            if (realPoint.y != yNums(gameData)) {
                 b = Bitmap.createBitmap(bitmap, realPoint.x * w, realPoint.y * h, w, h);
             }
             addBackView(nowPoint, realPoint);
@@ -286,19 +285,19 @@ public class GameView extends FrameLayout {
         final double maxW = getMeasuredWidth(); // 容器尺寸
         final double maxH = getMeasuredHeight();
 
-        int bitmapW_ = bitmapW;
-        int bitmapH_ = bitmapH * (yN + 1) / yN;
+        int bitmapWidth = bitmapW;
+        int bitmapHeight = bitmapH * (yN + 1) / yN;
 
         double scale;
 
-        if (maxH / bitmapH_ > maxW / bitmapW_) {
-            scale = maxW / bitmapW_;
+        if (maxH / bitmapHeight > maxW / bitmapWidth) {
+            scale = maxW / bitmapWidth;
         } else {
-            scale = maxH / bitmapH_;
+            scale = maxH / bitmapHeight;
         }
 
-        xOffset = (int) (maxW - bitmapW_ * scale) / 2;
-        yOffset = (int) (maxH - bitmapH_ * scale) / 2;
+        xOffset = (int) (maxW - bitmapWidth * scale) / 2;
+        yOffset = (int) (maxH - bitmapHeight * scale) / 2;
 
         unitWidth = (int) (bitmapW * scale / xN);
         unitHeight = (int) (bitmapH * scale / yN);
@@ -310,7 +309,7 @@ public class GameView extends FrameLayout {
         Point upPoint = new Point();
         upPoint.x = nowPointOfEmpty.x;
         upPoint.y = nowPointOfEmpty.y - 1;
-        if(!isValidePoint(upPoint)) {
+        if (!isValidePoint(upPoint)) {
             return null;
         }
         return getViewHolderByNowPoint(upPoint);
@@ -321,7 +320,7 @@ public class GameView extends FrameLayout {
         Point downPoint = new Point();
         downPoint.x = nowPointOfEmpty.x;
         downPoint.y = nowPointOfEmpty.y + 1;
-        if(!isValidePoint(downPoint)) {
+        if (!isValidePoint(downPoint)) {
             return null;
         }
         return getViewHolderByNowPoint(downPoint);
@@ -332,7 +331,7 @@ public class GameView extends FrameLayout {
         Point leftPoint = new Point();
         leftPoint.x = nowPointOfEmpty.x - 1;
         leftPoint.y = nowPointOfEmpty.y;
-        if(!isValidePoint(leftPoint)) {
+        if (!isValidePoint(leftPoint)) {
             return null;
         }
         return getViewHolderByNowPoint(leftPoint);
@@ -343,7 +342,7 @@ public class GameView extends FrameLayout {
         Point rightPoint = new Point();
         rightPoint.x = nowPointOfEmpty.x + 1;
         rightPoint.y = nowPointOfEmpty.y;
-        if(!isValidePoint(rightPoint)) {
+        if (!isValidePoint(rightPoint)) {
             return null;
         }
         return getViewHolderByNowPoint(rightPoint);
@@ -363,7 +362,7 @@ public class GameView extends FrameLayout {
 
     private boolean isValidePoint(Point point) {
         int index = point.y * xNums + point.x;
-        if(index < 0 || index >= gameData.size()) {
+        if (index < 0 || index >= gameData.size()) {
             return false;
         }
 
@@ -374,7 +373,7 @@ public class GameView extends FrameLayout {
         return true;
     }
     private PieceViewHolder getViewHolderByRealPoint(Point realPoint) {
-        for(PieceViewHolder viewHolder:viewSet) {
+        for (PieceViewHolder viewHolder:viewSet) {
             if (viewHolder.realPoint.equals(realPoint)) {
                 return viewHolder;
             }
@@ -382,7 +381,7 @@ public class GameView extends FrameLayout {
         return null;
     }
     private PieceViewHolder getViewHolderByNowPoint(Point nowPoint) {
-        for(PieceViewHolder viewHolder:viewSet) {
+        for (PieceViewHolder viewHolder:viewSet) {
             if (viewHolder.nowPoint.equals(nowPoint)) {
                 return viewHolder;
             }
@@ -392,7 +391,7 @@ public class GameView extends FrameLayout {
 
     private boolean gameOver() {
         boolean gameOver = true;
-        for(Point point: gameData) {
+        for (Point point: gameData) {
             int index = gameData.indexOf(point);
             gameOver = gameOver && (index == (xNums(gameData) * point.y + point.x));
         }
@@ -416,7 +415,7 @@ public class GameView extends FrameLayout {
         void onGameOver(); // finish
         void onGameEnd(); // end
     }
-    private static GameListener DefaultListener = new GameListener() {
+    private static final GameListener DefaultListener = new GameListener() {
         @Override
         public void onGameStart() {
 
@@ -469,7 +468,7 @@ public class GameView extends FrameLayout {
                     nowPoint.y--;
                     updateText();
                     isAnimating = false;
-                    if(gameOver()) {
+                    if (gameOver()) {
                         gameListener.onGameOver();
                     }
                 }
@@ -490,7 +489,7 @@ public class GameView extends FrameLayout {
                     nowPoint.y++;
                     updateText();
                     isAnimating = false;
-                    if(gameOver()) {
+                    if (gameOver()) {
                         gameListener.onGameOver();
                     }
                 }
@@ -510,7 +509,7 @@ public class GameView extends FrameLayout {
                     nowPoint.x--;
                     updateText();
                     isAnimating = false;
-                    if(gameOver()) {
+                    if (gameOver()) {
                         gameListener.onGameOver();
                     }
                 }
@@ -530,7 +529,7 @@ public class GameView extends FrameLayout {
                     nowPoint.x++;
                     updateText();
                     isAnimating = false;
-                    if(gameOver()) {
+                    if (gameOver()) {
                         gameListener.onGameOver();
                     }
                 }

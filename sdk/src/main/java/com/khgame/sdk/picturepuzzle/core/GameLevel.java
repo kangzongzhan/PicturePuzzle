@@ -16,7 +16,7 @@ public class GameLevel {
         return _getLevel(list.size());
     }
 
-    public static int getLevel(String str){
+    public static int getLevel(String str) {
         return _getLevel(str.length());
     }
 
@@ -42,25 +42,27 @@ public class GameLevel {
     }
 
     public static int xNums(int gameLevel) {
-        switch (gameLevel){
+        switch (gameLevel) {
             case EASY:
                 return 3;
             case MEDIUM:
                 return 4;
             case HARD:
                 return 6;
-            default:return 3;
+            default:
+                return 3;
         }
     }
     public static int yNums(int gameLevel) {
-        switch (gameLevel){
+        switch (gameLevel) {
             case EASY:
                 return 4;
             case MEDIUM:
                 return 6;
             case HARD:
                 return 8;
-            default:return 4;
+            default:
+                return 4;
         }
     }
 }

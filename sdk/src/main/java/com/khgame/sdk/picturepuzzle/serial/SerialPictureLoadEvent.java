@@ -10,7 +10,7 @@ import com.khgame.sdk.picturepuzzle.model.SerialPicture;
 public class SerialPictureLoadEvent {
     public final Result result;
     public SerialPicture serialPicture;
-    public SerialPictureLoadEvent (Result result) {
+    public SerialPictureLoadEvent(Result result) {
         this.result = result;
     }
 }

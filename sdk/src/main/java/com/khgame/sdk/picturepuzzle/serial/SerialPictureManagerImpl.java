@@ -17,7 +17,7 @@ import java.util.List;
  * Created by zkang on 2017/4/8.
  */
 
-public class SerialPictureManagerImpl implements SerialPictureManager{
+public class SerialPictureManagerImpl implements SerialPictureManager {
 
     private EventBus bus = EventBus.getDefault();
 
@@ -25,7 +25,7 @@ public class SerialPictureManagerImpl implements SerialPictureManager{
     private SerialPictureManagerImpl(){}
     public static SerialPictureManager getInstance() {
         synchronized (SerialPictureManagerImpl.class) {
-            if(instance != null) {
+            if (instance != null) {
                 return instance;
             }
             instance = new SerialPictureManagerImpl();
@@ -38,11 +38,11 @@ public class SerialPictureManagerImpl implements SerialPictureManager{
         new QueryAllSerialPicturesBySerialUuidOperation(serialUuid).callback(new Operation.Callback<List<SerialPicturePo>, Void>() {
             @Override
             public void onSuccessMainThread(List<SerialPicturePo> serialPicturePos) {
-                if(serialPicturePos == null || serialPicturePos.size() == 0) {
+                if (serialPicturePos == null || serialPicturePos.size() == 0) {
                     return;
                 }
                 List<SerialPicture> serialPictures = new ArrayList<>();
-                for(SerialPicturePo serialPicturePo : serialPicturePos) {
+                for (SerialPicturePo serialPicturePo : serialPicturePos) {
                     SerialPicture serialPicture = new SerialPicture();
                     serialPicture.uuid = serialPicturePo.uuid;
                     serialPicture.name = serialPicturePo.name;

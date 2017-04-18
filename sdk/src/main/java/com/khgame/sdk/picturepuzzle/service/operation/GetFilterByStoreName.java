@@ -3,17 +3,15 @@ package com.khgame.sdk.picturepuzzle.service.operation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.service.ApiProvider;
 import com.khgame.sdk.picturepuzzle.service.SerialService;
-import com.khgame.sdk.picturepuzzle.service.model.SerialDto;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Kisha Deng on 2/20/2017.
  */
 
-public class GetFilterByStoreName extends Operation<Map<String, Boolean>, Void>{
+public class GetFilterByStoreName extends Operation<Map<String, Boolean>, Void> {
 
     private String storeName;
     public GetFilterByStoreName(String name) {
@@ -26,7 +24,7 @@ public class GetFilterByStoreName extends Operation<Map<String, Boolean>, Void>{
         try {
             Map<String, Boolean> map = serialService.getFilterByStore(storeName).execute().body();
             postSuccess(map);
-        }catch (IOException e) {
+        } catch (IOException e) {
             postFailure(null);
         }
     }

@@ -26,14 +26,14 @@ public class QueryAllSerialPicturesBySerialUuidOperation extends DBOperation<Lis
         String[] columns = {Cols.ID, Cols.UUID, Cols.NAME, Cols.SERIALUUID,
                 Cols.EASYDATA, Cols.MEDIUMDATA, Cols.HARDDATA, Cols.URL};
         Cursor cursor = db.query(SerialPictureTable.NAME, columns, Cols.SERIALUUID + "='" + uuid + "'", null, null, null, null);
-        if(cursor == null) {
+        if (cursor == null) {
             postFailure(null);
             return;
         }
 
         List<SerialPicturePo> serialPicturePos = new ArrayList<>();
 
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             SerialPicturePo serialPicturePo = new SerialPicturePo();
             serialPicturePo.id = cursor.getLong(cursor.getColumnIndex(Cols.ID));
             serialPicturePo.name = cursor.getString(cursor.getColumnIndex(Cols.NAME));

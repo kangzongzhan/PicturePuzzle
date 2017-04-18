@@ -6,7 +6,7 @@ package com.khgame.sdk.picturepuzzle.db.table;
 
 public class ClassicPictureTable {
 
-    public static String NAME = "ClassPicture";
+    public static final String NAME = "ClassPicture";
     public static class Cols {
         public static final String ID = "_id"; // Integer, Primary key, Autoincrement
         public static final String UUID = "uuid"; // Text, Not Null

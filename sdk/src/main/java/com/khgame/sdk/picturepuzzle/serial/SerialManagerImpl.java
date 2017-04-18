@@ -41,7 +41,7 @@ public class SerialManagerImpl implements SerialManager {
     private SerialManagerImpl(){}
     public static SerialManager getInstance() {
         synchronized (SerialManagerImpl.class) {
-            if(instance != null) {
+            if (instance != null) {
                 return instance;
             }
             instance = new SerialManagerImpl();
@@ -191,7 +191,7 @@ public class SerialManagerImpl implements SerialManager {
     private List<Serial> merge(final List<SerialPo> serialPos, final List<SerialDto> serialDtos) {
         List<Serial> list = new ArrayList<>();
 
-        for(SerialPo serialPo: serialPos) {
+        for (SerialPo serialPo: serialPos) {
             Serial serial = new Serial();
             serial.uuid = serialPo.uuid;
             serial.name = serialPo.name;
@@ -202,8 +202,8 @@ public class SerialManagerImpl implements SerialManager {
             list.add(serial);
         }
 
-        for(SerialDto serialDto: serialDtos) {
-            if(have(list, serialDto)) {
+        for (SerialDto serialDto: serialDtos) {
+            if (have(list, serialDto)) {
                 continue;
             }
             Serial serial = new Serial();
@@ -220,7 +220,7 @@ public class SerialManagerImpl implements SerialManager {
 
     private boolean have(List<Serial> list, SerialDto serialDto) {
         for (Serial serial: list) {
-            if(serial.uuid.equals(serialDto.uuid)) {
+            if (serial.uuid.equals(serialDto.uuid)) {
                 return true;
             }
         }

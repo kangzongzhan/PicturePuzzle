@@ -25,20 +25,20 @@ public class SettingManager {
 
     private static SettingManager instance = null;
 
-    private SettingManager(Context context){
+    private SettingManager(Context context) {
         this.mContext = context.getApplicationContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         editor = sharedPreferences.edit();
     }
-    public static SettingManager Instance(){
-        if(instance == null){
+    public static SettingManager Instance() {
+        if (instance == null) {
             Log.e(TAG, "Instance() initialize should be called before this method.");
             return null;
         }
         return instance;
     }
-    public synchronized static void Initialize(Context context){
-        if(instance == null){
+    public synchronized static void Initialize(Context context) {
+        if (instance == null) {
             instance = new SettingManager(context);
         }
     }
@@ -66,7 +66,7 @@ public class SettingManager {
     public String getString(String key, String val, String def) {
         String result = sharedPreferences.getString(key, val);
         assert result != null;
-        if (result.equals("-1")) {
+        if ("-1".equals(result)) {
             editor.putString(key, def);
             Log.d(TAG, key + ", " + def);
             editor.commit();
@@ -103,7 +103,7 @@ public class SettingManager {
             result = sharedPreferences.getBoolean(key, def);
         } catch (ClassCastException e) {
             // Result is not a boolean
-            result = sharedPreferences.getString(key, def + "").equals("true");
+            result = "trues".equals(sharedPreferences.getString(key, def + ""));
             Log.d(TAG, "Recasted " + key + " with " + result);
         }
         editor.putBoolean(key, result);
@@ -136,7 +136,7 @@ public class SettingManager {
         return setInt(mContext.getString(resId), val);
     }
 
-    public int getInt(String key, int val){
+    public int getInt(String key, int val) {
         try {
             return sharedPreferences.getInt(key, val);
         } catch (ClassCastException e) {
@@ -212,9 +212,9 @@ public class SettingManager {
                 if (v.getClass().toString().contains("Boolean")) {
                     setBoolean(key, (Boolean) v);
                 } else if (v.getClass().toString().contains("String")) {
-                    if (v.equals("true"))
+                    if ("true".equals(v))
                         setBoolean(key, true);
-                    else if (v.equals("false"))
+                    else if ("false".equals(v))
                         setBoolean(key, false);
                     else
                         setString(key, (String) v);
@@ -260,9 +260,9 @@ public class SettingManager {
         for (String s : keys) {
             try {
                 Object value = sharedPreferences.getAll().get(s);
-                if (value.equals("true"))
+                if ("true".equals(value))
                     value = true;
-                else if (value.equals("false"))
+                else if ("false".equals(value))
                     value = false;
                 try {
                     if (value.equals(Integer.parseInt(value.toString()))) {

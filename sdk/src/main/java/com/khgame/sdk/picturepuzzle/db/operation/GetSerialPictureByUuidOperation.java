@@ -5,7 +5,6 @@ import android.database.Cursor;
 import com.khgame.sdk.picturepuzzle.db.model.SerialPicturePo;
 import com.khgame.sdk.picturepuzzle.db.table.SerialPictureTable;
 import com.khgame.sdk.picturepuzzle.db.table.SerialPictureTable.Cols;
-import com.khgame.sdk.picturepuzzle.model.SerialPicture;
 
 /**
  * Created by zkang on 2017/4/8.

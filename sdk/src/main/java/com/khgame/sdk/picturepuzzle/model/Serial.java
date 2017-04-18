@@ -5,7 +5,7 @@ package com.khgame.sdk.picturepuzzle.model;
  * Created by zkang on 2017/2/24.
  */
 
-public class Serial implements Comparable<Serial>{
+public class Serial implements Comparable<Serial> {
     public String uuid;
     public String name;
     public State installState;
@@ -30,7 +30,7 @@ public class Serial implements Comparable<Serial>{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Serial) {
+        if (obj instanceof Serial) {
             Serial serial = (Serial) obj;
             return serial.uuid.equals(this.uuid);
         }

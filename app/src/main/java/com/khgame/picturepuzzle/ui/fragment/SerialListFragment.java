@@ -1,6 +1,5 @@
 package com.khgame.picturepuzzle.ui.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,8 +22,6 @@ import com.khgame.sdk.picturepuzzle.common.Result;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.events.SerialFilterPassEvent;
 import com.khgame.sdk.picturepuzzle.model.Serial;
-import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
-import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.serial.SerialInstallEvent;
 import com.khgame.sdk.picturepuzzle.serial.SerialManager;
 import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
@@ -47,7 +44,7 @@ import butterknife.ButterKnife;
  */
 
 public class SerialListFragment extends SquaredFragment {
-    private static String COMPONENT = SerialListFragment.class.getSimpleName();
+    private static final String COMPONENT = SerialListFragment.class.getSimpleName();
 
     @BindView(R.id.gridview)
     GridView gridView;
@@ -195,7 +192,7 @@ public class SerialListFragment extends SquaredFragment {
             @Override
             public void onClick(View v) {
 
-                if(serial.installState == Serial.State.UNINSTALL) {
+                if (serial.installState == Serial.State.UNINSTALL) {
                     Log.d("kzz", "开始安装");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage(R.string.install_serial_hint);
@@ -204,7 +201,7 @@ public class SerialListFragment extends SquaredFragment {
                     builder.create().show();
                 }
 
-                if(serial.installState == Serial.State.INSTALLED) {
+                if (serial.installState == Serial.State.INSTALLED) {
                     Log.d("kzz", "已经安装");
                     Intent intent = new Intent();
                     intent.setClass(getContext(), SerialPictureListActivity.class);
@@ -214,7 +211,7 @@ public class SerialListFragment extends SquaredFragment {
                     startActivity(intent);
                 }
 
-                if(serial.installState == Serial.State.INSTALLING) {
+                if (serial.installState == Serial.State.INSTALLING) {
                     Log.d("kzz", "正在安装");
                 }
             }
@@ -237,8 +234,8 @@ public class SerialListFragment extends SquaredFragment {
         }
 
         private Serial getSerialByUuid(String uuid) {
-            for(Serial serial:serials) {
-                if(serial.uuid.equals(uuid)) {
+            for (Serial serial:serials) {
+                if (serial.uuid.equals(uuid)) {
                     return serial;
                 }
             }

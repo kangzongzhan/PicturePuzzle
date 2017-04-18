@@ -25,7 +25,7 @@ public class DisorderUtil {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
         StringBuilder sb = new StringBuilder();
-        for(Point point: list) {
+        for (Point point: list) {
             int index = point.y * xNums + point.x;
             char c = System64.encode(index);
             sb.append(c);
@@ -38,7 +38,7 @@ public class DisorderUtil {
         int xNums = xNums(gameLevel);
         List<Point> list = new ArrayList<>();
         char[] chars = str.toCharArray();
-        for(char c : chars) {
+        for (char c : chars) {
             int index = System64.decode(c);
             Point p = new Point();
             p.x = index % xNums;
@@ -94,7 +94,7 @@ public class DisorderUtil {
                 .with(25, () -> swipDown(seed))
                 .with(25, () -> swipLeft(seed))
                 .with(25, () -> swipRight(seed));
-        for(int i = 0; i < steps; i++) {
+        for (int i = 0; i < steps; i++) {
             probability.go();
         }
         return seed;
@@ -107,7 +107,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex + xNums;
 
-        if(targetIndex > list.size() - 1 || !valideIndex(list, targetIndex)) { //不可上划
+        if (targetIndex > list.size() - 1 || !valideIndex(list, targetIndex)) { //不可上划
             return false;
         }
 
@@ -127,7 +127,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex - xNums;
 
-        if(targetIndex < 0 || !valideIndex(list, targetIndex)) { //不可下划
+        if (targetIndex < 0 || !valideIndex(list, targetIndex)) { //不可下划
             return false;
         }
 
@@ -147,7 +147,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex + 1;
 
-        if(targetIndex % xNums == 0 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可左划
+        if (targetIndex % xNums == 0 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可左划
             return false;
         }
 
@@ -167,7 +167,7 @@ public class DisorderUtil {
         int whiteIndex = locateWhitePoint(list);
         int targetIndex = whiteIndex - 1;
 
-        if(targetIndex % xNums == xNums -1 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可右划
+        if (targetIndex % xNums == xNums - 1 || whiteIndex == list.size() - 1 || !valideIndex(list, targetIndex)) { //不可右划
             return false;
         }
 
@@ -189,7 +189,7 @@ public class DisorderUtil {
 
     private static List<Point> cloneList(final List<Point> list) {
         List<Point> copyList = new ArrayList<>(list.size());
-        for(Point p : list) {
+        for (Point p : list) {
             copyList.add(p.clone());
         }
         return copyList;
@@ -202,12 +202,12 @@ public class DisorderUtil {
      * 计算方法
      * |x1 - x2| + |y1 - y2|
      */
-    private static int innerDisorder(List<Point> list){
+    private static int innerDisorder(List<Point> list) {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
 
         int sum = 0;
-        for(Point point : list) {
+        for (Point point : list) {
             int index = list.indexOf(point);
             int x = index % xNums; // 当前x位置
             int y = index / xNums; // 当前y位置
@@ -221,15 +221,15 @@ public class DisorderUtil {
      * 外复杂度
      * 所以相邻的Point初始位置
      */
-    private static int outterDisorder(List<Point> list){
+    private static int outterDisorder(List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
         final int yNums = yNums(gameLevel);
 
         int sum = 0;
         // #1 每个Point与右边Point距离
-        for(int y = 0; y < yNums; y++) {
-            for(int x = 0; x < xNums - 1; x++) {
+        for (int y = 0; y < yNums; y++) {
+            for (int x = 0; x < xNums - 1; x++) {
                 int index = y * xNums + x;
                 Point left = list.get(index);
                 Point right = list.get(index + 1);
@@ -239,9 +239,9 @@ public class DisorderUtil {
         }
 
         // #2 每个Point与下面Point距离
-        for(int y = 0; y < yNums -1; y++) {
-            for(int x = 0; x < xNums; x++) {
-                int index = y*xNums + x;
+        for (int y = 0; y < yNums - 1; y++) {
+            for (int x = 0; x < xNums; x++) {
+                int index = y * xNums + x;
                 Point up = list.get(index);
                 Point down = list.get(index + xNums);
                 int value = Math.abs(up.x - down.x) + Math.abs(up.y - down.y);
@@ -250,7 +250,7 @@ public class DisorderUtil {
         }
 
         // 最后一行的Point与它上面那个
-        Point last = list.get(list.size()-1);
+        Point last = list.get(list.size() - 1);
         Point upOfLast = list.get(list.size() - 1 - xNums);
         int value = Math.abs(last.x - upOfLast.x) + Math.abs(last.y - upOfLast.y);
         sum += value;
@@ -282,7 +282,7 @@ public class DisorderUtil {
         return index < list.size() && index >= 0;
     }
 
-    static class DisorderValue implements Comparable<DisorderValue>{
+    static class DisorderValue implements Comparable<DisorderValue> {
         int innerValue;
         int outterValue;
         List<Point> list;
@@ -297,7 +297,7 @@ public class DisorderUtil {
             if (innerValue + outterValue > o.innerValue + o.outterValue) {
                 return -1;
             }
-            if (innerValue + outterValue < o.innerValue + o.outterValue){
+            if (innerValue + outterValue < o.innerValue + o.outterValue) {
                 return 1;
             }
             return 0;

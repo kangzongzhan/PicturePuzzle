@@ -21,7 +21,7 @@ public abstract class Operation<S, F> implements Runnable {
 
     private long beginTime;
     private Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
-    private Handler H = new Handler(Looper.getMainLooper());
+    private static final Handler H = new Handler(Looper.getMainLooper());
     protected Callback callback = NullCallback;
 
     @Override
@@ -98,7 +98,7 @@ public abstract class Operation<S, F> implements Runnable {
         public void onProgressMainThread(int progress){};
     }
 
-    private static Callback NullCallback = new Callback<>();
+    private static final Callback NullCallback = new Callback<>();
 
 
 }

@@ -1,6 +1,5 @@
 package com.khgame.picturepuzzle.ui.activity;
 
-import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.khgame.picturepuzzle.ui.view.CountDownView;
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
@@ -214,7 +212,7 @@ public class ClassicGameActivity extends SquaredActivity {
     };
 
     private void updateClassicPicture() {
-        if(gameView.isStarted()) {
+        if (gameView.isStarted()) {
             List<Point> gameData = gameView.getGameData();
             switch (GameLevel.getLevel(gameData)) {
                 case GameLevel.EASY:

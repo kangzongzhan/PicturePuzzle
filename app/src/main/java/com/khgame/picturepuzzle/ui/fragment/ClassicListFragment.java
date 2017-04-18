@@ -2,7 +2,6 @@ package com.khgame.picturepuzzle.ui.fragment;
 
 import android.Manifest;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Point;
@@ -33,18 +32,15 @@ import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
 import com.khgame.sdk.picturepuzzle.common.BitmapManager;
 import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
 import com.khgame.sdk.picturepuzzle.common.Result;
-import com.khgame.sdk.picturepuzzle.db.model.ClassicPicturePo;
 import com.khgame.sdk.picturepuzzle.db.operation.DeleteClassicPictureByUuid;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.events.ClassicPicturesLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
 import com.khgame.sdk.picturepuzzle.operation.CopyUriPicture;
-import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
 import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.common.SettingManager;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.GameLevel;
-import com.khgame.sdk.picturepuzzle.db.operation.QueryAllClassicPicturesOperation;
 import com.khgame.picturepuzzle.App;
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.ui.activity.ClassicGameActivity;
@@ -248,7 +244,7 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
 
             View disorderView;
             ViewHolder viewHolder;
-            if(view != null) {
+            if (view != null) {
                 disorderView = view;
                 viewHolder = (ViewHolder) disorderView.getTag();
             } else {
@@ -278,7 +274,7 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             return new ListView.LayoutParams(imageW, imageH);
         }
 
-        class ViewHolder implements View.OnLongClickListener, View.OnClickListener{
+        class ViewHolder implements View.OnLongClickListener, View.OnClickListener {
             @BindView(R.id.disorderImageView)
             DisorderImageView disorderImageView;
 
@@ -377,7 +373,7 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         ContentValues contentValues = new ContentValues(1);
         contentValues.put(MediaStore.Images.Media.DATA, outputImage.getAbsolutePath());
-        takePhotoUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
+        takePhotoUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, takePhotoUri);
         startActivityForResult(intent, REQUEST_TAKE_PHOTO);
     }

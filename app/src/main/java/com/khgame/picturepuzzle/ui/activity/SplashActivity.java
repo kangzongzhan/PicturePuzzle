@@ -28,7 +28,7 @@ public class SplashActivity extends SquaredActivity {
 
         int openTimes = SettingManager.Instance().getInt("OpenTimes", 0);
 
-        if(openTimes != 1) {
+        if (openTimes != 1) {
             Intent intent = new Intent();
             intent.setClass(this, MainActivity.class);
             startActivity(intent);

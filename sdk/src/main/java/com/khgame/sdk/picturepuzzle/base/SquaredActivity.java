@@ -22,7 +22,7 @@ public class SquaredActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!bus.isRegistered(this)) {
+        if (!bus.isRegistered(this)) {
             bus.register(this);
         }
     }
@@ -42,7 +42,7 @@ public class SquaredActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(bus.isRegistered(this)) {
+        if (bus.isRegistered(this)) {
             bus.unregister(this);
         }
     }

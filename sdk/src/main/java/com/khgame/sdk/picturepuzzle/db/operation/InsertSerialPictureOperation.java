@@ -3,7 +3,6 @@ package com.khgame.sdk.picturepuzzle.db.operation;
 import android.content.ContentValues;
 
 import com.khgame.sdk.picturepuzzle.db.table.SerialPictureTable;
-import com.khgame.sdk.picturepuzzle.db.table.SerialTable;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
 import com.khgame.sdk.picturepuzzle.service.model.SerialPictureDto;
 

@@ -21,8 +21,8 @@ public class QueryAllSerialsOperation extends DBOperation<List<SerialPo>, Void> 
         Cursor cursor = db.query(SerialTable.NAME, projection, null, null, null, null, orderBy);
 
         List<SerialPo> list = new ArrayList<>();
-        if(cursor != null) {
-            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 SerialPo serialPo = new SerialPo();
                 serialPo.uuid = cursor.getString(cursor.getColumnIndex(SerialTable.Cols.UUID));
                 serialPo.name = cursor.getString(cursor.getColumnIndex(SerialTable.Cols.NAME));

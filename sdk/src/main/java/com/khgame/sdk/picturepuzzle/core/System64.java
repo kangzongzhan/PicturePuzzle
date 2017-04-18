@@ -15,7 +15,7 @@ public class System64 {
     private static HashMap<Character, Integer> decodeMap = new HashMap();
 
     static {
-        for (int i = 0 ; i < 64; i++) {
+        for (int i = 0; i < 64; i++) {
             encodeMap.put(i, metaData[i]);
             decodeMap.put(metaData[i], i);
         }

@@ -1,9 +1,6 @@
 package com.khgame.sdk.picturepuzzle.serial;
 
 import com.khgame.sdk.picturepuzzle.model.Serial;
-import com.khgame.sdk.picturepuzzle.model.SerialPicture;
-
-import java.util.List;
 
 /**
  * Created by zkang on 2017/2/26.

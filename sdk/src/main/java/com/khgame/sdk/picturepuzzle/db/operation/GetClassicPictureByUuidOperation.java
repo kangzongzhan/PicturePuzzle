@@ -5,13 +5,12 @@ import android.database.Cursor;
 import com.khgame.sdk.picturepuzzle.db.model.ClassicPicturePo;
 import com.khgame.sdk.picturepuzzle.db.table.ClassicPictureTable;
 import com.khgame.sdk.picturepuzzle.db.table.ClassicPictureTable.Cols;
-import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
 
 /**
  * Created by zkang on 2017/2/19.
  */
 
-public class GetClassicPictureByUuidOperation extends DBOperation<ClassicPicturePo, Void>{
+public class GetClassicPictureByUuidOperation extends DBOperation<ClassicPicturePo, Void> {
     private String uuid;
     public GetClassicPictureByUuidOperation(String uuid) {
         this.uuid = uuid;

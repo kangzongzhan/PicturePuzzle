@@ -11,7 +11,7 @@ import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
  * Created by zkang on 2017/2/18.
  */
 
-public class InsertClassicPictureOperation extends DBOperation<ClassicPicture, Void>{
+public class InsertClassicPictureOperation extends DBOperation<ClassicPicture, Void> {
     private static final String TAG = "InsertClassic";
     private ClassicPicture picture;
 
@@ -29,7 +29,7 @@ public class InsertClassicPictureOperation extends DBOperation<ClassicPicture, V
 
         long id = db.insert(ClassicPictureTable.NAME, null, values);
 
-        if(id == -1) {
+        if (id == -1) {
             postFailure(null);
             Log.e(TAG, "insert classic picture failure");
         } else {

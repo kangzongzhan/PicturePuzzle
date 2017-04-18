@@ -20,7 +20,7 @@ public class UpdateSerialOperation extends DBOperation<Void, Void> {
         ContentValues values = new ContentValues();
         values.put(SerialTable.Cols.GAMELEVEL, serial.gameLevel);
         int rows = db.update(SerialTable.NAME, values, SerialTable.Cols.UUID + "='" + serial.uuid + "'", null);
-        if(rows == 0) {
+        if (rows == 0) {
             postFailure(null);
         } else {
             postSuccess(null);

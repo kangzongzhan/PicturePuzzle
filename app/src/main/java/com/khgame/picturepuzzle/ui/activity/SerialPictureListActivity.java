@@ -2,7 +2,6 @@ package com.khgame.picturepuzzle.ui.activity;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,13 +11,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.khgame.picturepuzzle.common.ColorUtil;
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
 import com.khgame.sdk.picturepuzzle.common.BitmapManager;
 import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
@@ -28,8 +25,6 @@ import com.khgame.sdk.picturepuzzle.core.GameLevel;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
-import com.khgame.sdk.picturepuzzle.operation.LoadPictureOperation;
-import com.khgame.sdk.picturepuzzle.operation.Operation;
 import com.khgame.sdk.picturepuzzle.serial.SerialLoadEvent;
 import com.khgame.sdk.picturepuzzle.serial.SerialManager;
 import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
@@ -186,7 +181,7 @@ public class SerialPictureListActivity extends SquaredActivity {
 
             View disorderView;
             ViewHolder viewHolder;
-            if(view != null) {
+            if (view != null) {
                 disorderView = view;
                 viewHolder = (ViewHolder) disorderView.getTag();
             } else {
@@ -217,7 +212,7 @@ public class SerialPictureListActivity extends SquaredActivity {
             return new ListView.LayoutParams(imageW, imageH);
         }
 
-        class ViewHolder implements View.OnClickListener{
+        class ViewHolder implements View.OnClickListener {
             @BindView(R.id.disorderImageView)
             DisorderImageView disorderImageView;
 

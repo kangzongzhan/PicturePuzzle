@@ -13,7 +13,7 @@ import java.util.List;
  * Created by zkang on 2017/2/25.
  */
 
-public class GetSerialPicturesFromServiceBySerialUuidOperation extends Operation <List<SerialPictureDto>, Void> {
+public class GetSerialPicturesFromServiceBySerialUuidOperation extends Operation<List<SerialPictureDto>, Void> {
 
     private String uuid;
 
@@ -27,7 +27,7 @@ public class GetSerialPicturesFromServiceBySerialUuidOperation extends Operation
         try {
             List<SerialPictureDto> list = serialService.getSerialPicturesByUuid(uuid).execute().body();
             postSuccess(list);
-        }catch (IOException e) {
+        } catch (IOException e) {
             postFailure(null);
         }
     }

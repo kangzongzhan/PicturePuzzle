@@ -36,10 +36,10 @@ public class TabView extends FrameLayout {
 
 
     @OnClick(R.id.left)
-    public  void selectLeft(){
+    public  void selectLeft() {
         leftButton.setSelected(true);
         rightButton.setSelected(false);
-        if(this.onTabSelectListener != null) {
+        if (this.onTabSelectListener != null) {
             onTabSelectListener.onLeftSelect();
         }
     }
@@ -48,7 +48,7 @@ public class TabView extends FrameLayout {
     public void selectRight() {
         rightButton.setSelected(true);
         leftButton.setSelected(false);
-        if(this.onTabSelectListener != null) {
+        if (this.onTabSelectListener != null) {
             onTabSelectListener.onRightSelect();
         }
     }

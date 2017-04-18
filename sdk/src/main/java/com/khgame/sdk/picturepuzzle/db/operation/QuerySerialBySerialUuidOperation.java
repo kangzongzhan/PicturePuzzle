@@ -23,7 +23,7 @@ public class QuerySerialBySerialUuidOperation extends DBOperation<SerialPo, Void
         Cursor cursor = db.query(SerialTable.NAME, columns, selection, selectionArgs, null, null, orderBy);
         SerialPo serialPo = new SerialPo();
         if (cursor != null) {
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 serialPo.uuid = cursor.getString(cursor.getColumnIndex(SerialTable.Cols.UUID));
                 serialPo.name = cursor.getString(cursor.getColumnIndex(SerialTable.Cols.NAME));

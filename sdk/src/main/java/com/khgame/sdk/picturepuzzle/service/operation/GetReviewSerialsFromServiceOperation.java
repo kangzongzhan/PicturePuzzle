@@ -12,14 +12,14 @@ import java.util.List;
  * Created by Kisha Deng on 2/20/2017.
  */
 
-public class GetReviewSerialsFromServiceOperation extends Operation<List<SerialDto>, Void>{
+public class GetReviewSerialsFromServiceOperation extends Operation<List<SerialDto>, Void> {
     @Override
     protected void doWork() {
         SerialService serialService = ApiProvider.getSerialService();
         try {
             List<SerialDto> list = serialService.getSerialsForReview().execute().body();
             postSuccess(list);
-        }catch (IOException e) {
+        } catch (IOException e) {
             postFailure(null);
         }
     }

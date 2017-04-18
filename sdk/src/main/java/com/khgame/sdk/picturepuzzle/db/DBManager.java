@@ -22,7 +22,7 @@ public class DBManager {
 
     public static DBManager getInstance() {
         synchronized (DBManager.class) {
-            if(instance == null)
+            if (instance == null)
                 instance = new DBManager();
         }
         return instance;

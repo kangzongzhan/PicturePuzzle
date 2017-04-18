@@ -89,7 +89,7 @@ public class MainActivity extends SquaredActivity {
 
         @Override
         public void onPageSelected(int position) {
-            if(position == 0) {
+            if (position == 0) {
                 tabView.selectLeft();
             } else {
                 tabView.selectRight();

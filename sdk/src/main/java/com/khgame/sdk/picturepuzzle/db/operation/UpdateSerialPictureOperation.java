@@ -2,14 +2,8 @@ package com.khgame.sdk.picturepuzzle.db.operation;
 
 import android.content.ContentValues;
 
-import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
-import com.khgame.sdk.picturepuzzle.core.GameLevel;
-import com.khgame.sdk.picturepuzzle.core.Point;
-import com.khgame.sdk.picturepuzzle.db.table.ClassicPictureTable;
 import com.khgame.sdk.picturepuzzle.db.table.SerialPictureTable;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
-
-import java.util.List;
 
 /**
  * Created by zkang on 2017/2/19.
@@ -29,7 +23,7 @@ public class UpdateSerialPictureOperation extends DBOperation<SerialPicture, Voi
         values.put(SerialPictureTable.Cols.MEDIUMDATA, serialPicture.mediumData);
         values.put(SerialPictureTable.Cols.HARDDATA, serialPicture.hardData);
         int rows = db.update(SerialPictureTable.NAME, values, SerialPictureTable.Cols.UUID + "='" + serialPicture.uuid + "'", null);
-        if(rows == 0) {
+        if (rows == 0) {
             postFailure(null);
         } else {
             postSuccess(null);

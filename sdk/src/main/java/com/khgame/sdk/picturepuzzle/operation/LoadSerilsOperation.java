@@ -44,7 +44,7 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
 
     private List<Serial> merge() {
         List<Serial> list = new ArrayList<>();
-        for(SerialPo serialPo: listPos) {
+        for (SerialPo serialPo: listPos) {
             Serial serial = new Serial();
             serial.uuid = serialPo.uuid;
             serial.name = serialPo.name;
@@ -55,8 +55,8 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
             list.add(serial);
         }
 
-        for(SerialDto serialDto: listDtos) {
-            if(have(list, serialDto)) {
+        for (SerialDto serialDto: listDtos) {
+            if (have(list, serialDto)) {
                 continue;
             }
             Serial serial = new Serial();
@@ -73,7 +73,7 @@ public class LoadSerilsOperation extends Operation<List<Serial>, Void> {
 
     private boolean have(List<Serial> list, SerialDto serialDto) {
         for (Serial serial: list) {
-            if(serial.uuid.equals(serialDto.uuid)) {
+            if (serial.uuid.equals(serialDto.uuid)) {
                 return true;
             }
         }

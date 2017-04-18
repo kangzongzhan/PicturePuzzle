@@ -7,7 +7,6 @@ import com.khgame.sdk.picturepuzzle.db.model.ClassicPicturePo;
 import com.khgame.sdk.picturepuzzle.db.table.ClassicPictureTable;
 
 import com.khgame.sdk.picturepuzzle.db.table.ClassicPictureTable.Cols;
-import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,8 @@ public class QueryAllClassicPicturesOperation extends DBOperation<List<ClassicPi
 
         List<ClassicPicturePo> result = new ArrayList<>();
 
-        if(cursor != null) {
-            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 ClassicPicturePo picture = new ClassicPicturePo();
                 picture.uuid = cursor.getString(cursor.getColumnIndex(Cols.UUID));
                 picture.easyData = cursor.getString(cursor.getColumnIndex(Cols.EASYDATA));

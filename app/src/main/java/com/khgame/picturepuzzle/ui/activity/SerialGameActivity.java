@@ -214,7 +214,7 @@ public class SerialGameActivity extends SquaredActivity {
     };
 
     private void updateSerialPicture() {
-        if(gameView.isStarted()) {
+        if (gameView.isStarted()) {
             List<Point> gameData = gameView.getGameData();
             switch (GameLevel.getLevel(gameData)) {
                 case GameLevel.EASY:

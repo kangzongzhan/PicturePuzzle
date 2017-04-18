@@ -18,7 +18,7 @@ public class LoadLocalPicture extends Operation<Bitmap, String> {
     @Override
     protected void doWork() {
         Bitmap bitmap = BitmapFactory.decodeFile(localPath);
-        if(bitmap == null) {
+        if (bitmap == null) {
             postFailure("");
         } else {
             postSuccess(bitmap);

@@ -3,12 +3,10 @@ package com.khgame.picturepuzzle.ui.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
@@ -19,6 +17,7 @@ import android.view.ViewOutlineProvider;
 import android.view.animation.LinearInterpolator;
 
 import com.khgame.picturepuzzle.R;
+import com.khgame.picturepuzzle.common.UIUtils;
 
 /**
  * Created by zkang on 2017/4/16.
@@ -37,19 +36,19 @@ public class CountDownView extends View {
     public CountDownView(Context context) {
         super(context);
         this.setBackgroundResource(R.drawable.circle_background);
-        this.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        setOutLine();
     }
 
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.setBackgroundResource(R.drawable.circle_background);
-        this.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        setOutLine();
     }
 
     public CountDownView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.setBackgroundResource(R.drawable.circle_background);
-        this.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        setOutLine();
     }
 
     public void setDuration(long duration) {
@@ -62,8 +61,8 @@ public class CountDownView extends View {
 
     public void setColor(int primary, int secondary) {
         this.color1 = primary;
-        this.setBackgroundTintList(ColorStateList.valueOf(color1));
         this.color2 = secondary;
+        this.setBackgroundTint(primary);
         initPaint();
     }
 
@@ -88,7 +87,7 @@ public class CountDownView extends View {
         animator.start();
     }
 
-    float center[] = new float[2];
+    float[] center = new float[2];
     float radius;
     @Override
     protected void onDraw(Canvas canvas) {
@@ -149,7 +148,7 @@ public class CountDownView extends View {
             path.lineTo(center[0] + radius, center[1] - radius);
             path.lineTo(center[0] + radius, center[1] + radius);
             path.lineTo(center[0] - radius, center[1] + radius);
-            path.lineTo(center[0] - radius, center[1] + (float)Math.tan(1.5 * Math.PI - radians) * radius);
+            path.lineTo(center[0] - radius, center[1] + (float) Math.tan(1.5 * Math.PI - radians) * radius);
         } else if (degree >= 315f) {
             path.lineTo(center[0] + radius, center[1] - radius);
             path.lineTo(center[0] + radius, center[1] + radius);
@@ -161,7 +160,18 @@ public class CountDownView extends View {
         return path;
     }
 
-    public interface TimeOutListener{
+    @TargetApi(21)
+    private void setOutLine() {
+        if (UIUtils.hasLollipop())
+            this.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+    }
+    @TargetApi(21)
+    private void setBackgroundTint(int color) {
+        if (UIUtils.hasLollipop())
+            this.setBackgroundTintList(ColorStateList.valueOf(color));
+    }
+
+    public interface TimeOutListener {
         void timeOut();
     }
 }
