@@ -464,7 +464,6 @@ public class GameView extends FrameLayout {
             view.animate().yBy(-unitHeight).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    Log.d("kzz", "animation end");
                     nowPoint.y--;
                     updateText();
                     isAnimating = false;
@@ -475,7 +474,6 @@ public class GameView extends FrameLayout {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    Log.d("kzz", "animation start");
                     isAnimating = true;
                 }
             }).setDuration(ANIMATION_DURATION).start();
@@ -485,7 +483,6 @@ public class GameView extends FrameLayout {
             view.animate().yBy(unitHeight).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    Log.d("kzz", "animation end");
                     nowPoint.y++;
                     updateText();
                     isAnimating = false;
@@ -496,7 +493,6 @@ public class GameView extends FrameLayout {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    Log.d("kzz", "animation start");
                     isAnimating = true;
                 }
             }).setDuration(ANIMATION_DURATION).start();
@@ -525,7 +521,6 @@ public class GameView extends FrameLayout {
             view.animate().xBy(unitWidth).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    Log.d("kzz", "animation end");
                     nowPoint.x++;
                     updateText();
                     isAnimating = false;
@@ -536,7 +531,6 @@ public class GameView extends FrameLayout {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    Log.d("kzz", "animation start");
                     isAnimating = true;
                 }
             }).setDuration(ANIMATION_DURATION).start();

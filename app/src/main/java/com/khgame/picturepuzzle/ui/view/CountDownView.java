@@ -70,7 +70,6 @@ public class CountDownView extends View {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, "progress", 100f);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener((animation) -> {
-            Log.d("kzz", "progress:" + progress);
             this.setProgress(animation.getAnimatedFraction());
             this.invalidate();
         });

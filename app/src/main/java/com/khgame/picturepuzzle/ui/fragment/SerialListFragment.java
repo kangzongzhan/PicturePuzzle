@@ -193,7 +193,6 @@ public class SerialListFragment extends SquaredFragment {
             public void onClick(View v) {
 
                 if (serial.installState == Serial.State.UNINSTALL) {
-                    Log.d("kzz", "开始安装");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage(R.string.install_serial_hint);
                     builder.setPositiveButton(android.R.string.yes, (dialog, which) -> serialManager.install(serial));
@@ -202,7 +201,6 @@ public class SerialListFragment extends SquaredFragment {
                 }
 
                 if (serial.installState == Serial.State.INSTALLED) {
-                    Log.d("kzz", "已经安装");
                     Intent intent = new Intent();
                     intent.setClass(getContext(), SerialPictureListActivity.class);
                     intent.putExtra(SerialPictureListActivity.SERIAL_UUID, serial.uuid);
@@ -212,7 +210,6 @@ public class SerialListFragment extends SquaredFragment {
                 }
 
                 if (serial.installState == Serial.State.INSTALLING) {
-                    Log.d("kzz", "正在安装");
                 }
             }
 

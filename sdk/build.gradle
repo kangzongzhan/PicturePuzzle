@@ -15,10 +15,10 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "appStore", '"xiaomi"'
+            buildConfigField "String", "appStore", '"app store name"'
         }
         release {
-            buildConfigField "String", "appStore", '"xiaomi"'
+            buildConfigField "String", "appStore", '"app store name"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

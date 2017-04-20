@@ -159,7 +159,6 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
 
                 @Override
                 public void onFailureMainThread(Void aVoid) {
-                    Log.d("kzz", "copy uri failure");
                     super.onFailureMainThread(aVoid);
                 }
             }).enqueue();
