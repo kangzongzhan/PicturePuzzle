@@ -17,7 +17,7 @@ public class DBManager {
     private static DBManager instance;
 
     private static Context mContext;
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 10;
     private static final String DB_NAME = "picture-puzzle-db";
 
     public static DBManager getInstance() {
@@ -45,7 +45,13 @@ public class DBManager {
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+            if (oldVersion < 10 && newVersion == 10) {
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ClassicPictureTable.NAME);
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SerialTable.NAME);
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SerialPictureTable.NAME);
+                onCreate(sqLiteDatabase);
+            }
 
         }
     };

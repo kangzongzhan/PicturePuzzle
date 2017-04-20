@@ -73,7 +73,6 @@ public class SerialGameActivity extends SquaredActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classic_game);
         ButterKnife.bind(this);
-
         uuid = getIntent().getStringExtra(SerialGameActivity.SRIALPICTURE_UUID);
         gameLevel = getIntent().getIntExtra(SerialGameActivity.GAME_LEVEL, GameLevel.EASY);
         primaryColor = getIntent().getIntExtra(SerialGameActivity.SRIALPICTURE_PRIMARY_COLOR, getResources().getColor(R.color.colorPrimary));
@@ -150,6 +149,7 @@ public class SerialGameActivity extends SquaredActivity {
     public void onEventMainThread(SerialPictureLoadEvent event) {
         if (event.result == Result.Success && event.serialPicture.uuid.equals(uuid)) {
             this.serialPicture = event.serialPicture;
+            getSupportActionBar().setTitle(this.serialPicture.name);
             tryToStartGame();
         }
     }

@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.khgame.picturepuzzle.R;
-import com.khgame.sdk.picturepuzzle.BuildConfig;
+import com.khgame.picturepuzzle.BuildConfig;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.GameLevel;
 import com.khgame.sdk.picturepuzzle.core.Point;
@@ -452,11 +452,11 @@ public class GameView extends FrameLayout {
 
         private void updateText() {
             if (BuildConfig.DEBUG) {
-                infoLayout.setVisibility(GONE);
-            } else {
                 infoLayout.setVisibility(VISIBLE);
                 realText.setText("Real:" + realPoint.toString());
                 nowText.setText("Now:" + nowPoint.toString());
+            } else {
+                infoLayout.setVisibility(GONE);
             }
         }
 

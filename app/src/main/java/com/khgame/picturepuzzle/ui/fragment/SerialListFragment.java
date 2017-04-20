@@ -144,7 +144,7 @@ public class SerialListFragment extends SquaredFragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            ViewHolder viewHolder = null;
+            ViewHolder viewHolder;
             if (view == null) {
                 view = LayoutInflater.from(SerialListFragment.this.getContext()).inflate(R.layout.serial_item, null);
                 viewHolder = new ViewHolder(view);
