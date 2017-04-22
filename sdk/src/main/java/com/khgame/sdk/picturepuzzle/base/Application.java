@@ -47,19 +47,12 @@ public abstract class Application extends MultiDexApplication {
         return new File(PictureDir(uuid), uuid);
     }
 
-    public static File TakePhotoFile() {
-        File dir = new File(instance.getCacheDir(), "take_photo");
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        return new File(dir, "photo");
-    }
 
     public void initImageLoader() {
         File cacheDir = StorageUtils.getCacheDirectory(this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
-                .diskCacheExtraOptions(480, 800, null)
+                .memoryCacheExtraOptions(600, 800) // default = device screen dimensions
+                .diskCacheExtraOptions(600, 800, null)
                 .taskExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .taskExecutorForCachedImages(AsyncTask.THREAD_POOL_EXECUTOR)
                 .threadPoolSize(3) // default
