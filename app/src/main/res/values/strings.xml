@@ -8,6 +8,14 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="tips">Tips</string>
+    <string name="disorder_preview">Disorder Preview</string>
+    <string name="five_star">Five Star</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
     <string name="install_serial_hint">Are you sure to download?</string>
     <string name="delete_hint">Are you sure to delete?</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="wishes">Enjoy the game, have a good life.</string>
+    <string name="exit">Exit</string>
 </resources>

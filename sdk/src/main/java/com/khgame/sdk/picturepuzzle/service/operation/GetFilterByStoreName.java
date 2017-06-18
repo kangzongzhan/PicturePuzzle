@@ -5,6 +5,7 @@ import com.khgame.sdk.picturepuzzle.service.ApiProvider;
 import com.khgame.sdk.picturepuzzle.service.SerialService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +24,9 @@ public class GetFilterByStoreName extends Operation<Map<String, Boolean>, Void> 
         SerialService serialService = ApiProvider.getSerialService();
         try {
             Map<String, Boolean> map = serialService.getFilterByStore(storeName).execute().body();
+            if (map == null) {
+                map = new HashMap<>();
+            }
             postSuccess(map);
         } catch (IOException e) {
             postFailure(null);

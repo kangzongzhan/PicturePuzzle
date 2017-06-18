@@ -12,17 +12,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
 import com.khgame.sdk.picturepuzzle.common.BitmapManager;
 import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.Constant;
 import com.khgame.sdk.picturepuzzle.common.Result;
+import com.khgame.sdk.picturepuzzle.common.SettingManager;
 import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
 import com.khgame.sdk.picturepuzzle.core.GameLevel;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
+import com.khgame.sdk.picturepuzzle.events.SerialDisorderPreviewSettingChange;
 import com.khgame.sdk.picturepuzzle.model.Serial;
 import com.khgame.sdk.picturepuzzle.model.SerialPicture;
 import com.khgame.sdk.picturepuzzle.serial.SerialLoadEvent;
@@ -145,7 +150,9 @@ public class SerialPictureListActivity extends SquaredActivity {
         }
         updateFabImage();
         serialManager.updateSerial(serial);
-        adapter.notifyDataSetChanged();
+        if (SettingManager.Instance().getBoolean(Constant.SERIAL_DISORDER_PREVIEW, true)) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -186,7 +193,6 @@ public class SerialPictureListActivity extends SquaredActivity {
                 viewHolder = (ViewHolder) disorderView.getTag();
             } else {
                 disorderView = LayoutInflater.from(SerialPictureListActivity.this).inflate(R.layout.serial_picture_item, null);
-                disorderView.setLayoutParams(getLayoutParams());
                 viewHolder = new ViewHolder(disorderView);
             }
             viewHolder.setSerialPicture((SerialPicture) getItem(i));
@@ -203,18 +209,15 @@ public class SerialPictureListActivity extends SquaredActivity {
             }
         }
 
-        private ListView.LayoutParams getLayoutParams() {
-            android.graphics.Point point = new android.graphics.Point();
-            SerialPictureListActivity.this.getWindowManager().getDefaultDisplay().getSize(point);
-            int displayWidth = point.x;
-            int imageW = displayWidth / 3;
-            int imageH = imageW * 4 / 3;
-            return new ListView.LayoutParams(imageW, imageH);
-        }
-
         class ViewHolder implements View.OnClickListener {
+            @BindView(R.id.imageContainer)
+            FrameLayout imageContainer;
+
             @BindView(R.id.disorderImageView)
             DisorderImageView disorderImageView;
+
+            @BindView(R.id.orderImageView)
+            ImageView orderImageView;
 
             @BindView(R.id.progressBar)
             ProgressHit progressHit;
@@ -229,6 +232,14 @@ public class SerialPictureListActivity extends SquaredActivity {
                 view.setOnClickListener(this);
                 ButterKnife.bind(this, view);
                 bus.register(this);
+                imageContainer.setLayoutParams(getLayoutParams());
+                if (SettingManager.Instance().getBoolean(Constant.SERIAL_DISORDER_PREVIEW, true)) {
+                    disorderImageView.setVisibility(View.VISIBLE);
+                    orderImageView.setVisibility(View.GONE);
+                } else {
+                    disorderImageView.setVisibility(View.GONE);
+                    orderImageView.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -245,12 +256,25 @@ public class SerialPictureListActivity extends SquaredActivity {
             public void onEventMainThread(BitmapLoadEvent event) {
                 if (event.result == Result.Success && event.uuid.equals(serialPicture.uuid)) {
                     disorderImageView.setBitmap(event.bitmap);
+                    orderImageView.setImageBitmap(event.bitmap);
+                }
+            }
+
+            @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+            public void onEventMainThread(SerialDisorderPreviewSettingChange e) {
+                if (SettingManager.Instance().getBoolean(Constant.SERIAL_DISORDER_PREVIEW, true)) {
+                    disorderImageView.setVisibility(View.VISIBLE);
+                    orderImageView.setVisibility(View.GONE);
+                } else {
+                    disorderImageView.setVisibility(View.GONE);
+                    orderImageView.setVisibility(View.VISIBLE);
                 }
             }
 
             public void setSerialPicture(final SerialPicture picture) {
                 this.serialPicture = picture;
                 disorderImageView.setBitmap(null);
+                orderImageView.setImageBitmap(null);
                 bitmapManager.loadBitmapByUuid(picture.uuid);
                 switch (serial.gameLevel) {
                     case GameLevel.EASY:
@@ -265,6 +289,15 @@ public class SerialPictureListActivity extends SquaredActivity {
                 }
                 progressHit.setGameData(picture.easyData, picture.mediumData, picture.hardData);
                 title.setText(picture.name);
+            }
+
+            private LinearLayout.LayoutParams getLayoutParams() {
+                android.graphics.Point point = new android.graphics.Point();
+                SerialPictureListActivity.this.getWindowManager().getDefaultDisplay().getSize(point);
+                int displayWidth = point.x;
+                int imageW = displayWidth / 3;
+                int imageH = imageW * 4 / 3;
+                return new LinearLayout.LayoutParams(imageW, imageH);
             }
 
         }

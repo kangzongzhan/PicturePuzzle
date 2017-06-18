@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,9 +32,11 @@ import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManager;
 import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
 import com.khgame.sdk.picturepuzzle.common.BitmapManager;
 import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.sdk.picturepuzzle.common.Constant;
 import com.khgame.sdk.picturepuzzle.common.Result;
 import com.khgame.sdk.picturepuzzle.db.operation.DeleteClassicPictureByUuid;
 import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
+import com.khgame.sdk.picturepuzzle.events.ClassicDisorderPreviewSettingChange;
 import com.khgame.sdk.picturepuzzle.events.ClassicPicturesLoadEvent;
 import com.khgame.sdk.picturepuzzle.model.ClassicPicture;
 import com.khgame.sdk.picturepuzzle.operation.CopyUriPicture;
@@ -187,7 +190,9 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
         }
         updateFabImage();
         SettingManager.Instance().setInt("ClassicLevel", gameLevel);
-        listAdapter.notifyDataSetChanged();
+        if (SettingManager.Instance().getBoolean(Constant.CLASSIC_DISORDER_PREVIEW, true)) {
+            listAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -277,6 +282,9 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             @BindView(R.id.disorderImageView)
             DisorderImageView disorderImageView;
 
+            @BindView(R.id.oderImageView)
+            ImageView oderImageView;
+
             @BindView(R.id.progressBar)
             ProgressHit progressHit;
 
@@ -288,6 +296,14 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
                 view.setOnLongClickListener(this);
                 ButterKnife.bind(this, view);
                 bus.register(this);
+
+                if (SettingManager.Instance().getBoolean(Constant.CLASSIC_DISORDER_PREVIEW)) {
+                    disorderImageView.setVisibility(View.VISIBLE);
+                    oderImageView.setVisibility(View.GONE);
+                } else {
+                    disorderImageView.setVisibility(View.GONE);
+                    oderImageView.setVisibility(View.VISIBLE);
+                }
             }
 
             public void setClassicPicture(final ClassicPicture picture) {
@@ -337,6 +353,30 @@ public class ClassicListFragment extends SquaredFragment implements EasyPermissi
             public void onEventMainThread(BitmapLoadEvent event) {
                 if (event.result == Result.Success && TextUtils.equals(event.uuid, classicPicture.uuid)) {
                     disorderImageView.setBitmap(event.bitmap);
+                    oderImageView.setImageBitmap(event.bitmap);
+                }
+            }
+            @Subscribe(threadMode = ThreadMode.MAIN) @SuppressWarnings("unused") // invoked by event bus
+            public void onEventMainThread(ClassicDisorderPreviewSettingChange e) {
+                if (SettingManager.Instance().getBoolean(Constant.CLASSIC_DISORDER_PREVIEW)) {
+                    disorderImageView.setVisibility(View.VISIBLE);
+                    oderImageView.setVisibility(View.GONE);
+                    String data = null;
+                    switch (gameLevel) {
+                        case GameLevel.EASY:
+                            data = classicPicture.easyData;
+                            break;
+                        case GameLevel.MEDIUM:
+                            data = classicPicture.mediumData;
+                            break;
+                        case GameLevel.HARD:
+                            data = classicPicture.hardData;
+                            break;
+                    }
+                    disorderImageView.setPositionList(DisorderUtil.decode(data));
+                } else {
+                    disorderImageView.setVisibility(View.GONE);
+                    oderImageView.setVisibility(View.VISIBLE);
                 }
             }
         }

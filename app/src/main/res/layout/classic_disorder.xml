@@ -6,6 +6,11 @@
         android:id="@+id/disorderImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/oderImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
     <com.khgame.picturepuzzle.ui.view.ProgressHit
         android:id="@+id/progressBar"
         android:layout_gravity="bottom|end"
