@@ -129,22 +129,22 @@
         </LinearLayout>
 
         <!-- Privacy Policy -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/setting_item_height"
-            android:paddingStart="@dimen/common_padding"
-            android:paddingLeft="@dimen/common_padding"
-            android:paddingEnd="@dimen/common_padding"
-            android:paddingRight="@dimen/common_padding"
-            android:gravity="center_vertical"
-            android:background="@drawable/item_background">
-            <TextView
-                android:id="@+id/privacyPolicy"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center|start"
-                android:text="@string/privacy_policy"/>
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/setting_item_height"-->
+            <!--android:paddingStart="@dimen/common_padding"-->
+            <!--android:paddingLeft="@dimen/common_padding"-->
+            <!--android:paddingEnd="@dimen/common_padding"-->
+            <!--android:paddingRight="@dimen/common_padding"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:background="@drawable/item_background">-->
+            <!--<TextView-->
+                <!--android:id="@+id/privacyPolicy"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center|start"-->
+                <!--android:text="@string/privacy_policy"/>-->
+        <!--</LinearLayout>-->
 
         <!-- Exit Game -->
         <LinearLayout
