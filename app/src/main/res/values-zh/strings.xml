@@ -9,4 +9,11 @@
     <string name="tips">提示</string>
     <string name="install_serial_hint">确定下载吗？</string>
     <string name="delete_hint">确定删除吗？</string>
+    <string name="disorder_preview">乱序预览</string>
+    <string name="exit">退出</string>
+    <string name="five_star">好评</string>
+    <string name="navigation_drawer_close">关</string>
+    <string name="navigation_drawer_open">开</string>
+    <string name="privacy_policy">隐私声明</string>
+    <string name="wishes">轻轻松松，享受游戏生活。</string>
 </resources>
