@@ -15,6 +15,7 @@ buildscript {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    google()
 }
 
 
@@ -32,7 +33,11 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "appStore", '"app store name"'
+        }
         release {
+            buildConfigField "String", "appStore", '"app store name"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -45,7 +50,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':sdk')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs'
@@ -75,6 +79,14 @@ dependencies {
     compile 'com.google.dagger:dagger-android:2.11'
     compile 'com.google.dagger:dagger-android-support:2.11' // if you use the support libraries
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
+
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 task styleCheck(type: Checkstyle) {

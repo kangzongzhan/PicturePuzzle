@@ -12,11 +12,11 @@ import android.widget.CompoundButton;
 
 import com.khgame.picturepuzzle.BuildConfig;
 import com.khgame.picturepuzzle.R;
-import com.khgame.sdk.picturepuzzle.base.SquaredFragment;
-import com.khgame.sdk.picturepuzzle.common.Constant;
-import com.khgame.sdk.picturepuzzle.common.SettingManager;
-import com.khgame.sdk.picturepuzzle.events.ClassicDisorderPreviewSettingChange;
-import com.khgame.sdk.picturepuzzle.events.SerialDisorderPreviewSettingChange;
+import com.khgame.picturepuzzle.base.SquaredFragment;
+import com.khgame.picturepuzzle.common.Constant;
+import com.khgame.picturepuzzle.common.SettingManager;
+import com.khgame.picturepuzzle.events.ClassicDisorderPreviewSettingChange;
+import com.khgame.picturepuzzle.events.SerialDisorderPreviewSettingChange;
 
 import org.greenrobot.eventbus.EventBus;
 

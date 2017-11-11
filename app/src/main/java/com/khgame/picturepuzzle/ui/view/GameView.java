@@ -18,16 +18,16 @@ import android.widget.TextView;
 
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.BuildConfig;
-import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
-import com.khgame.sdk.picturepuzzle.core.GameLevel;
-import com.khgame.sdk.picturepuzzle.core.Point;
+import com.khgame.picturepuzzle.core.DisorderUtil;
+import com.khgame.picturepuzzle.core.GameLevel;
+import com.khgame.picturepuzzle.core.Point;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.khgame.sdk.picturepuzzle.core.GameLevel.xNums;
-import static com.khgame.sdk.picturepuzzle.core.GameLevel.yNums;
+import static com.khgame.picturepuzzle.core.GameLevel.xNums;
+import static com.khgame.picturepuzzle.core.GameLevel.yNums;
 
 /**
  * Created by KangZongZhan on 2017/1/18.

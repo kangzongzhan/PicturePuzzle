@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.khgame.sdk.picturepuzzle.core.DisorderUtil;
-import com.khgame.sdk.picturepuzzle.core.Point;
+import com.khgame.picturepuzzle.core.DisorderUtil;
+import com.khgame.picturepuzzle.core.Point;
 import com.khgame.picturepuzzle.R;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.khgame.sdk.picturepuzzle.core.GameLevel.xNums;
+import static com.khgame.picturepuzzle.core.GameLevel.xNums;
 
 /**
  * Created by zkang on 2017/3/5.

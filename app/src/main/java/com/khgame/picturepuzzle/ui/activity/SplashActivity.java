@@ -7,11 +7,11 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
-import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManager;
-import com.khgame.sdk.picturepuzzle.classic.ClassicPictureManagerImpl;
-import com.khgame.sdk.picturepuzzle.classic.InitClassicPictureFinishEvent;
-import com.khgame.sdk.picturepuzzle.common.SettingManager;
+import com.khgame.picturepuzzle.base.SquaredActivity;
+import com.khgame.picturepuzzle.classic.ClassicPictureManager;
+import com.khgame.picturepuzzle.classic.ClassicPictureManagerImpl;
+import com.khgame.picturepuzzle.classic.InitClassicPictureFinishEvent;
+import com.khgame.picturepuzzle.common.SettingManager;
 import com.khgame.picturepuzzle.R;
 
 import org.greenrobot.eventbus.Subscribe;

@@ -11,7 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 
-import com.khgame.sdk.picturepuzzle.base.SquaredActivity;
+import com.khgame.picturepuzzle.base.SquaredActivity;
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.ui.fragment.ClassicListFragment;
 import com.khgame.picturepuzzle.ui.fragment.SerialListFragment;

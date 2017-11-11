@@ -3,8 +3,8 @@ package com.khgame.picturepuzzle.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.khgame.sdk.picturepuzzle.core.GameLevel;
-import com.khgame.sdk.picturepuzzle.core.Point;
+import com.khgame.picturepuzzle.core.GameLevel;
+import com.khgame.picturepuzzle.core.Point;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,8 +16,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import static com.khgame.sdk.picturepuzzle.core.GameLevel.xNums;
-import static com.khgame.sdk.picturepuzzle.core.GameLevel.yNums;
+import static com.khgame.picturepuzzle.core.GameLevel.xNums;
+import static com.khgame.picturepuzzle.core.GameLevel.yNums;
 
 @SuppressLint("DrawAllocation")
 public class DisorderImageView extends View {

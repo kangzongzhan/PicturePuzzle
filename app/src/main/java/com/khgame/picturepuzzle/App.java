@@ -3,9 +3,9 @@ package com.khgame.picturepuzzle;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.facebook.stetho.Stetho;
-import com.khgame.sdk.picturepuzzle.base.Application;
-import com.khgame.sdk.picturepuzzle.common.SettingManager;
-import com.khgame.sdk.picturepuzzle.db.DBManager;
+import com.khgame.picturepuzzle.base.Application;
+import com.khgame.picturepuzzle.common.SettingManager;
+import com.khgame.picturepuzzle.db.DBManager;
 import io.fabric.sdk.android.Fabric;
 
 /**

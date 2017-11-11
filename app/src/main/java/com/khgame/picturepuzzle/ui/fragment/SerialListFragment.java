@@ -15,17 +15,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.khgame.sdk.picturepuzzle.base.SquaredFragment;
-import com.khgame.sdk.picturepuzzle.common.BitmapManager;
-import com.khgame.sdk.picturepuzzle.common.BitmapManagerImpl;
-import com.khgame.sdk.picturepuzzle.common.Result;
-import com.khgame.sdk.picturepuzzle.events.BitmapLoadEvent;
-import com.khgame.sdk.picturepuzzle.events.SerialFilterPassEvent;
-import com.khgame.sdk.picturepuzzle.model.Serial;
-import com.khgame.sdk.picturepuzzle.serial.SerialInstallEvent;
-import com.khgame.sdk.picturepuzzle.serial.SerialManager;
-import com.khgame.sdk.picturepuzzle.serial.SerialManagerImpl;
-import com.khgame.sdk.picturepuzzle.serial.SerialsLoadEvent;
+import com.khgame.picturepuzzle.base.SquaredFragment;
+import com.khgame.picturepuzzle.common.BitmapManager;
+import com.khgame.picturepuzzle.common.BitmapManagerImpl;
+import com.khgame.picturepuzzle.common.Result;
+import com.khgame.picturepuzzle.events.BitmapLoadEvent;
+import com.khgame.picturepuzzle.events.SerialFilterPassEvent;
+import com.khgame.picturepuzzle.model.Serial;
+import com.khgame.picturepuzzle.serial.SerialInstallEvent;
+import com.khgame.picturepuzzle.serial.SerialManager;
+import com.khgame.picturepuzzle.serial.SerialManagerImpl;
+import com.khgame.picturepuzzle.serial.SerialsLoadEvent;
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.ui.activity.SerialPictureListActivity;
 
