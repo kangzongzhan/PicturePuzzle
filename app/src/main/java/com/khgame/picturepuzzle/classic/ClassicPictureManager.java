@@ -1,5 +1,7 @@
 package com.khgame.picturepuzzle.classic;
 
+import android.content.Context;
+
 import com.khgame.picturepuzzle.model.ClassicPicture;
 
 /**
@@ -12,7 +14,7 @@ public interface ClassicPictureManager {
      * we should copy default picture to local
      * and insert them to db
      */
-    void initialize();
+    void initialize(Context context);
 
     /**
      * get all classic pictures

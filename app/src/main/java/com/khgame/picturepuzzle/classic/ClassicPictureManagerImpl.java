@@ -1,8 +1,12 @@
 package com.khgame.picturepuzzle.classic;
 
+import android.content.Context;
+
+import com.google.android.gms.games.Game;
 import com.khgame.picturepuzzle.common.Result;
 import com.khgame.picturepuzzle.core.DisorderUtil;
 import com.khgame.picturepuzzle.core.GameLevel;
+import com.khgame.picturepuzzle.data.source.local.AppDatabase;
 import com.khgame.picturepuzzle.db.model.ClassicPicturePo;
 import com.khgame.picturepuzzle.db.operation.GetClassicPictureByUuidOperation;
 import com.khgame.picturepuzzle.db.operation.InsertClassicPictureOperation;
@@ -42,12 +46,21 @@ public class ClassicPictureManagerImpl implements ClassicPictureManager {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(Context context) {
         new EmptyOperation().callback(new Operation.Callback<Void, Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 for (int i = 1; i < 10; i++) {
                     String assets = "default0" + i + ".jpg";
+
+                    com.khgame.picturepuzzle.data.ClassicPicture cp = new com.khgame.picturepuzzle.data.ClassicPicture();
+                    cp.setId(UUID.randomUUID().toString());
+                    cp.setEasy(DisorderUtil.newDisorderString(GameLevel.EASY));
+                    cp.setMedium(DisorderUtil.newDisorderString(GameLevel.MEDIUM));
+                    cp.setHard(DisorderUtil.newDisorderString(GameLevel.HARD));
+                    AppDatabase.getInstance(context).classicDao().insertTask(cp);
+
+
                     new CopyAssetsToDiskOperation(assets, UUID.randomUUID().toString()).callback(new Operation.Callback<ClassicPicture, Void>() {
                         @Override
                         public void onSuccess(final ClassicPicture classicPicture) {

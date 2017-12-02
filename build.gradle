@@ -25,6 +25,12 @@ allprojects {
     }
 }
 
+ext {
+    supportLibraryVersion = '26.1.0'
+    roomVersion = "1.0.0"
+    retrofitVersion = "2.3.0"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

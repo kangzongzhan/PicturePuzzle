@@ -37,7 +37,7 @@ public class SplashActivity extends SquaredActivity {
         Log.d(SplashActivity.class.getSimpleName(), "OpenTimes:" + openTimes);
         if (openTimes == 1) {
             Log.d(this.getClass().getSimpleName(), "Open this app first time, init class picture");
-            classicManager.initialize();
+            classicManager.initialize(getApplicationContext());
             handler.sendEmptyMessageDelayed(CLOSE, 3000);
         } else {
             Log.d(this.getClass().getSimpleName(), "Open this app " + openTimes + " times, start main activity 3s later");
