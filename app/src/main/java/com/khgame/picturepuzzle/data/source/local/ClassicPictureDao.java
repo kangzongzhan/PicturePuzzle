@@ -15,10 +15,10 @@ public interface ClassicPictureDao {
     List<ClassicPicture> getClassics();
 
     /**
-     * Insert a task in the database. If the task already exists, replace it.
+     * Insert a classic picture in the database. If the picture already exists, replace it.
      *
-     * @param task the task to be inserted.
+     * @param classicPicture the picture to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertTask(ClassicPicture task);
+    void insertTask(ClassicPicture classicPicture);
 }

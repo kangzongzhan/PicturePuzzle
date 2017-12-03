@@ -15,7 +15,6 @@ public class Serial {
     private int gameLevel;
     @Nullable
     private int theme;
-
     @Ignore
     private String coverUrl;
 
