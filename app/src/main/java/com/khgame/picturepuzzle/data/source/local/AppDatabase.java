@@ -14,7 +14,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
 
-    public abstract ClassicPictureDao classicDao();
+    public abstract ClassicPictureDao classicPictureDao();
     public abstract SerialDao serialDao();
     public abstract SerialPictureDao serialPictureDao();
 

@@ -10,9 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.widget.Toast;
 
 import com.khgame.picturepuzzle.base.SquaredActivity;
 import com.khgame.picturepuzzle.R;
+import com.khgame.picturepuzzle.data.Serial;
+import com.khgame.picturepuzzle.data.source.AppRepository;
 import com.khgame.picturepuzzle.ui.fragment.ClassicListFragment;
 import com.khgame.picturepuzzle.ui.fragment.SerialListFragment;
 import com.khgame.picturepuzzle.ui.view.TabView;
@@ -23,6 +26,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends SquaredActivity {
 
@@ -48,6 +54,20 @@ public class MainActivity extends SquaredActivity {
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppRepository appRepository = AppRepository.getINSTANCE();
+        appRepository.getSerials()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(serials -> {
+                    for (Serial serial: serials) {
+                        Toast.makeText(MainActivity.this, serial.getId(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void initToolbar(Toolbar toolbar) {

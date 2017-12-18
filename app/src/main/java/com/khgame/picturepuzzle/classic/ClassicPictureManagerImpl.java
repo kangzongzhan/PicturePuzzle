@@ -58,7 +58,7 @@ public class ClassicPictureManagerImpl implements ClassicPictureManager {
                     cp.setEasy(DisorderUtil.newDisorderString(GameLevel.EASY));
                     cp.setMedium(DisorderUtil.newDisorderString(GameLevel.MEDIUM));
                     cp.setHard(DisorderUtil.newDisorderString(GameLevel.HARD));
-                    AppDatabase.getInstance(context).classicDao().insertTask(cp);
+                    AppDatabase.getInstance(context).classicPictureDao().insertTask(cp);
 
 
                     new CopyAssetsToDiskOperation(assets, UUID.randomUUID().toString()).callback(new Operation.Callback<ClassicPicture, Void>() {

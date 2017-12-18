@@ -5,6 +5,7 @@ import com.khgame.picturepuzzle.data.SerialPicture;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,12 +17,12 @@ public interface SerialService {
     Call<List<Serial>> getAllSerials();
 
     @GET("serials")
-    Observable<List<Serial>> getAllSerialsRx();
+    Flowable<List<Serial>> getAllSerialsRx();
 
     @GET("serial/{serialId}")
     Call<List<SerialPicture>> getSerialPictures(@Path(value = "serialId") String id);
 
     @GET("serial/{serialId}")
-    Observable<List<SerialPicture>> getSerialPicturesRx(@Path(value = "serialId") String id);
+    Flowable<List<SerialPicture>> getSerialPicturesRx(@Path(value = "serialId") String id);
 
 }

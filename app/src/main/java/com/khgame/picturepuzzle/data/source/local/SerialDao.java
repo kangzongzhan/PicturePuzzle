@@ -7,11 +7,10 @@ import com.khgame.picturepuzzle.data.Serial;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-
+import io.reactivex.Flowable;
 @Dao
 public interface SerialDao {
 
     @Query("SELECT * FROM Serial")
-    Observable<List<Serial>> getSerials();
+    Flowable<List<Serial>> getSerials();
 }

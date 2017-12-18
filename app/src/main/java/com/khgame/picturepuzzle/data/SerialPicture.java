@@ -2,10 +2,11 @@ package com.khgame.picturepuzzle.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(foreignKeys = @ForeignKey(entity = Serial.class, parentColumns = "id", childColumns = "serialId"))
+@Entity(indices = @Index(value = "serialId"), foreignKeys = @ForeignKey(entity = Serial.class, parentColumns = "id", childColumns = "serialId"))
 public class SerialPicture {
     @PrimaryKey
     @NonNull

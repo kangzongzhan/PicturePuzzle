@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'checkstyle'
 apply plugin: 'io.fabric'
 
@@ -20,12 +19,12 @@ repositories {
 
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.2'
     defaultConfig {
         applicationId "com.khgame.picturepuzzle"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 12
         versionName "2.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -89,6 +88,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.3.0'
 
     implementation 'com.android.support:multidex:1.0.1'
+
+    // gson
+    compile "com.google.code.gson:gson:$rootProject.gsonVersion"
+
+    // rxjava
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
 
     // room
     implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"

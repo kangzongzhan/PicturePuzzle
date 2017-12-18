@@ -7,9 +7,8 @@ import com.khgame.picturepuzzle.data.SerialPicture;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 
-public interface PictureDataSource extends PictureLoader, PictureSaver{
+public interface PictureLoader {
     Flowable<List<ClassicPicture>> getClassicPictures();
     Flowable<List<Serial>> getSerials();
     Flowable<List<SerialPicture>> getSerialPictures(String serialId);

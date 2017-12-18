@@ -7,22 +7,23 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AppServiceProvider {
+public class RemoteServiceProvider {
 
-    private static volatile AppServiceProvider INSTANCE = null;
+    private static volatile RemoteServiceProvider INSTANCE = null;
 
-    private Retrofit retrofit = null;
-    private SerialService serialService = null;
+    private volatile Retrofit retrofit = null;
+    private volatile SerialService serialService = null;
+    private volatile ClassicService classicService = null;
 
     private static final String BASE_URL = "http://kzz.oss-cn-shenzhen.aliyuncs.com/picturepuzzle/api/";
 
-    private AppServiceProvider(){}
+    private RemoteServiceProvider(){}
 
-    public static AppServiceProvider getInstance() {
+    public static RemoteServiceProvider getInstance() {
         if (INSTANCE == null) {
-            synchronized (AppServiceProvider.class) {
+            synchronized (RemoteServiceProvider.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new AppServiceProvider();
+                    INSTANCE = new RemoteServiceProvider();
                     INSTANCE.initRetrofit();
                 }
             }
@@ -32,13 +33,24 @@ public class AppServiceProvider {
 
     public SerialService getSerialService() {
         if (serialService == null) {
-            synchronized (AppServiceProvider.class) {
+            synchronized (RemoteServiceProvider.class) {
                 if (serialService == null) {
                     serialService = retrofit.create(SerialService.class);
                 }
             }
         }
         return serialService;
+    }
+
+    public ClassicService getClassicService() {
+        if (classicService == null) {
+            synchronized (RemoteServiceProvider.class) {
+                if (classicService == null) {
+                    classicService = retrofit.create(ClassicService.class);
+                }
+            }
+        }
+        return classicService;
     }
 
 
