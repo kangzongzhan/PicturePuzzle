@@ -22,11 +22,9 @@ public class App extends Application {
         super.onCreate();
         context = getApplicationContext();
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
-        SettingManager.Initialize(this);
         DBManager.initialize(this);
         Stetho.initializeWithDefaults(this);
         int openTimes = SettingManager.Instance().getInt("OpenTimes", 0);
-        SettingManager.Instance().setInt("OpenTimes", ++openTimes);
     }
 
     public static AppDatabase getAppDatabase() {

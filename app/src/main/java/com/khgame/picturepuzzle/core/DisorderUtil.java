@@ -1,27 +1,34 @@
 package com.khgame.picturepuzzle.core;
 
 import android.support.annotation.NonNull;
-
-import com.khgame.picturepuzzle.common.Constant;
+import com.jakewharton.rxrelay2.PublishRelay;
 import com.khgame.picturepuzzle.common.Probability;
-import com.khgame.picturepuzzle.common.SettingManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 import static com.khgame.picturepuzzle.core.GameLevel.getLevel;
 import static com.khgame.picturepuzzle.core.GameLevel.xNums;
 import static com.khgame.picturepuzzle.core.GameLevel.yNums;
 
-/**
- * Created by Kisha Deng on 2/12/2017.
- */
-
 public class DisorderUtil {
     private static final String TAG = "DisorderUtil";
-    private static SettingManager settings = SettingManager.Instance();
-    public static String encode(List<Point> list) {
+    private String EASY_TEMPLATE;
+    private String MEDIUM_TEMPLATE;
+    private String HARD_TEMPLATE;
+
+    private PublishRelay<String> templatePublish = PublishRelay.create();
+
+    public DisorderUtil(String easy, String medium, String hard) {
+        this.EASY_TEMPLATE = easy;
+        this.MEDIUM_TEMPLATE = medium;
+        this.HARD_TEMPLATE = hard;
+    }
+
+    public String encode(List<Point> list) {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
         StringBuilder sb = new StringBuilder();
@@ -33,7 +40,7 @@ public class DisorderUtil {
         return sb.toString();
     }
 
-    public static List<Point> decode(String str) {
+    public List<Point> decode(String str) {
         int gameLevel = getLevel(str);
         int xNums = xNums(gameLevel);
         List<Point> list = new ArrayList<>();
@@ -48,47 +55,52 @@ public class DisorderUtil {
         return list;
     }
 
-    public static String newDisorderString(int gameLevel) {
+    public String newDisorderString(int gameLevel) {
         return encode(newDisorderList(gameLevel));
     }
 
-    public static List<Point> newDisorderList(int gameLevel) {
+    public List<Point> newDisorderList(int gameLevel) {
         String disorderBase = null;
         switch (gameLevel) {
             case GameLevel.EASY:
-                disorderBase = settings.getString(Constant.EASY_TEMPLATE_KEY, Constant.EASY_TEMPLATE_DEFAULT);
+                disorderBase = EASY_TEMPLATE;
                 break;
             case GameLevel.MEDIUM:
-                disorderBase = settings.getString(Constant.MEDIUM_TEMPLATE_KEY, Constant.MEDIUM_TEMPLATE_DEFAULT);
+                disorderBase = MEDIUM_TEMPLATE;
                 break;
             case GameLevel.HARD:
-                disorderBase = settings.getString(Constant.HARD_TEMPLATE_KEY, Constant.HARD_TEMPLATE_DEFAULT);
+                disorderBase = HARD_TEMPLATE;
         }
 
 
         final List<Point> list = randomStep(disorderBase, 1000);
 
         // set disorder base, be used for next disorder
+        String base = encode(list);
         switch (gameLevel) {
             case GameLevel.EASY:
-                settings.setString(Constant.EASY_TEMPLATE_KEY, encode(list));
+                EASY_TEMPLATE = base;
                 break;
             case GameLevel.MEDIUM:
-                settings.setString(Constant.MEDIUM_TEMPLATE_KEY, encode(list));
+                MEDIUM_TEMPLATE = base;
                 break;
             case GameLevel.HARD:
-                settings.setString(Constant.HARD_TEMPLATE_KEY, encode(list));
+                HARD_TEMPLATE = base;
         }
-
+        templatePublish.accept(base);
         return list;
     }
 
-    public static List<Point> randomStep(String seed, int steps) {
+    public Observable<String> observeTemplate() {
+        return templatePublish;
+    }
+
+    public List<Point> randomStep(String seed, int steps) {
         List<Point> seedList = decode(seed);
         return randomStep(seedList, steps);
     }
 
-    public static List<Point> randomStep(List<Point> seed, int steps) {
+    public List<Point> randomStep(List<Point> seed, int steps) {
         Probability probability = new Probability();
         probability.with(25, () -> swipUp(seed))
                 .with(25, () -> swipDown(seed))
@@ -100,7 +112,7 @@ public class DisorderUtil {
         return seed;
     }
 
-    public static boolean swipUp(final List<Point> list) {
+    public boolean swipUp(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
@@ -120,7 +132,7 @@ public class DisorderUtil {
         return true;
     }
 
-    public static boolean swipDown(final List<Point> list) {
+    public boolean swipDown(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
@@ -140,7 +152,7 @@ public class DisorderUtil {
         return true;
     }
 
-    public static boolean swipLeft(final List<Point> list) {
+    public boolean swipLeft(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
@@ -160,7 +172,7 @@ public class DisorderUtil {
         return true;
     }
 
-    public static boolean swipRight(final List<Point> list) {
+    public boolean swipRight(final List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
 
@@ -180,14 +192,14 @@ public class DisorderUtil {
         return true;
     }
 
-    private static int locateWhitePoint(final List<Point> list) {
+    private int locateWhitePoint(final List<Point> list) {
         Point whitePoint = new Point();
         whitePoint.x = 0;
         whitePoint.y = yNums(getLevel(list));
         return list.indexOf(whitePoint);
     }
 
-    private static List<Point> cloneList(final List<Point> list) {
+    private List<Point> cloneList(final List<Point> list) {
         List<Point> copyList = new ArrayList<>(list.size());
         for (Point p : list) {
             copyList.add(p.clone());
@@ -202,7 +214,7 @@ public class DisorderUtil {
      * 计算方法
      * |x1 - x2| + |y1 - y2|
      */
-    private static int innerDisorder(List<Point> list) {
+    private int innerDisorder(List<Point> list) {
         int gameLevel = getLevel(list);
         int xNums = xNums(gameLevel);
 
@@ -221,7 +233,7 @@ public class DisorderUtil {
      * 外复杂度
      * 所以相邻的Point初始位置
      */
-    private static int outterDisorder(List<Point> list) {
+    private int outterDisorder(List<Point> list) {
         final int gameLevel = getLevel(list);
         final int xNums = xNums(gameLevel);
         final int yNums = yNums(gameLevel);
@@ -261,7 +273,7 @@ public class DisorderUtil {
     /**
      * 按照 50% 30% 15% 5%的概率选择
      */
-    private static List<Point> chooseList(List<Point> up, List<Point> right, List<Point> down, List<Point> left) {
+    private List<Point> chooseList(List<Point> up, List<Point> right, List<Point> down, List<Point> left) {
         final List<DisorderValue> disorderValues = new ArrayList<>();
         disorderValues.add(new DisorderValue(up));
         disorderValues.add(new DisorderValue(right));
@@ -282,7 +294,7 @@ public class DisorderUtil {
         return index < list.size() && index >= 0;
     }
 
-    static class DisorderValue implements Comparable<DisorderValue> {
+    class DisorderValue implements Comparable<DisorderValue> {
         int innerValue;
         int outterValue;
         List<Point> list;

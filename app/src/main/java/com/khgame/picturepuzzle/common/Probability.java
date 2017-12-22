@@ -3,10 +3,6 @@ package com.khgame.picturepuzzle.common;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by zkang on 2017/3/31.
- */
-
 public class Probability {
 
     private List<Bean> beans = new ArrayList<>();
