@@ -34,7 +34,7 @@ ext {
     rxandroidVersion = "2.0.1"
     rxjavaVersion = "2.1.7"
     rxrelayVersion = "2.0.0"
-    daggerVersion = "2.11"
+    daggerVersion = "2.14.1"
 }
 
 task clean(type: Delete) {
