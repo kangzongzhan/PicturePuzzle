@@ -35,6 +35,7 @@ ext {
     rxjavaVersion = "2.1.7"
     rxrelayVersion = "2.0.0"
     daggerVersion = "2.14.1"
+    stethoVersion = "1.5.0"
 }
 
 task clean(type: Delete) {
