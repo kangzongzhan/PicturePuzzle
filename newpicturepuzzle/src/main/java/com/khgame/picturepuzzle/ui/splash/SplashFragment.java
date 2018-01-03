@@ -1,6 +1,5 @@
 package com.khgame.picturepuzzle.ui.splash;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,11 +17,9 @@ import com.khgame.picturepuzzle.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
-import dagger.android.support.DaggerFragment;
-
 @ActivityScoped
 public class SplashFragment extends BaseFragment implements SplashContract.View {
-    private static final int DURATION = 5000;
+    private static final int DURATION = 1000;
 
     ImageView logo;
     @Inject
