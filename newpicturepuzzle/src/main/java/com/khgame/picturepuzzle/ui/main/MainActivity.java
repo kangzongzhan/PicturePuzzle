@@ -3,13 +3,13 @@ package com.khgame.picturepuzzle.ui.main;
 import android.os.Bundle;
 
 import com.khgame.picturepuzzle.R;
-import com.khgame.picturepuzzle.ui.BaseActivity;
+import com.khgame.picturepuzzle.ui.base.BaseDaggerActivity;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseDaggerActivity {
 
     private static final String MAIN_FRAGMENT = "MAIN_FRAGMENT";
 

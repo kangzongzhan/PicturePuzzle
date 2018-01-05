@@ -3,13 +3,13 @@ package com.khgame.picturepuzzle.ui.splash;
 import android.os.Bundle;
 
 import com.khgame.picturepuzzle.R;
-import com.khgame.picturepuzzle.ui.BaseActivity;
+import com.khgame.picturepuzzle.ui.base.BaseDaggerActivity;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseDaggerActivity {
 
     @Inject
     SplashPresenter splashPresenter;

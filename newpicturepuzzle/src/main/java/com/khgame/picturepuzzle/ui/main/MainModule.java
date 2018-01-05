@@ -9,7 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 
-@Module(includes = {ClassicModule.class})
+@Module
 public abstract class MainModule {
 
     @FragmentScoped

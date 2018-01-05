@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle.ui.main.classic;
+package com.khgame.picturepuzzle.ui.main.serial;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,17 +12,17 @@ import android.widget.TextView;
 import com.khgame.picturepuzzle.ui.base.BaseFragment;
 
 
-public class ClassicFragment extends BaseFragment implements ClassicContract.View {
+public class SerialFragment extends BaseFragment implements SerialContract.View {
 
 
-    public ClassicFragment() {
+    public SerialFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TextView textView = new TextView(container.getContext());
-        textView.setText("Classic Fragment");
+        textView.setText("Serial Fragment");
         return textView;
     }
 

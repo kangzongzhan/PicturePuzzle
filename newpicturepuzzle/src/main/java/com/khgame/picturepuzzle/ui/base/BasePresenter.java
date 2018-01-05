@@ -1,4 +1,4 @@
-package com.khgame.picturepuzzle.ui;
+package com.khgame.picturepuzzle.ui.base;
 
 public interface BasePresenter<T> {
     /**

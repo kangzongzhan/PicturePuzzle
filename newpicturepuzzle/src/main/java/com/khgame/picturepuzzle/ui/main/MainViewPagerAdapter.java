@@ -3,17 +3,14 @@ package com.khgame.picturepuzzle.ui.main;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.khgame.picturepuzzle.di.FragmentScoped;
-import com.khgame.picturepuzzle.ui.main.classic.ClassicContract;
+import com.khgame.picturepuzzle.di.ActivityScoped;
 import com.khgame.picturepuzzle.ui.main.classic.ClassicFragment;
+import com.khgame.picturepuzzle.ui.main.serial.SerialFragment;
 
 import javax.inject.Inject;
 
-@FragmentScoped
+@ActivityScoped
 public class MainViewPagerAdapter extends FragmentPagerAdapter  {
-
-    @Inject
-    ClassicFragment classicFragment;
 
     @Inject
     public MainViewPagerAdapter(MainFragment mainFragment) {
@@ -23,9 +20,10 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter  {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return classicFragment;
+            return new ClassicFragment();
+        } else {
+            return new SerialFragment();
         }
-        return null;
     }
 
     @Override

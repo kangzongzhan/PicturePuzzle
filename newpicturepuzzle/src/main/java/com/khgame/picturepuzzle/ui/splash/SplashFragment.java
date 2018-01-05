@@ -12,13 +12,13 @@ import android.widget.ImageView;
 
 import com.khgame.picturepuzzle.R;
 import com.khgame.picturepuzzle.di.ActivityScoped;
-import com.khgame.picturepuzzle.ui.BaseFragment;
+import com.khgame.picturepuzzle.ui.base.BaseDaggerFragment;
 import com.khgame.picturepuzzle.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
 @ActivityScoped
-public class SplashFragment extends BaseFragment implements SplashContract.View {
+public class SplashFragment extends BaseDaggerFragment implements SplashContract.View {
     private static final int DURATION = 1000;
 
     ImageView logo;
